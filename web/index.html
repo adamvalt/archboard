@@ -9,7 +9,7 @@
   --bg: #f6f6f3; --panel: #ffffff; --ink: #1d1d1b; --muted: #6d6c66; --line: #dcdbd4;
   --card: #ffffff; --chip: #f1f0ea; --accent: #2f6fde; --accent-soft: #e3ecfc;
   --bad: #d23c2f; --bad-soft: #fbe5e2; --good: #23864f; --good-soft: #def3e6; --warn: #b7791f;
-  --edge: #9a988f; --in: #c77d0a; --out: #2f6fde;
+  --edge: #9a988f; --in: #c77d0a; --out: #13917f;
   --l0: #7a5cd6; --l1: #2f6fde; --l2: #1b9a8a; --l3: #c77d0a; --l4: #8c8a80; --l5: #c2417a;
 }
 @media (prefers-color-scheme: dark) {
@@ -17,7 +17,7 @@
     --bg: #161615; --panel: #1f1f1d; --ink: #ecebe6; --muted: #9b9a93; --line: #34342f;
     --card: #232321; --chip: #2d2d2a; --accent: #6b9cf0; --accent-soft: #23314a;
     --bad: #f0776b; --bad-soft: #3d2320; --good: #5cc48a; --good-soft: #1e3427; --warn: #e0a84a;
-    --edge: #6f6d66; --in: #e0a84a; --out: #6b9cf0;
+    --edge: #6f6d66; --in: #e0a84a; --out: #45c2ad;
   }
 }
 * { box-sizing: border-box; }
@@ -71,6 +71,13 @@ main { position: absolute; top: 46px; left: 0; right: 0; bottom: 0; display: fle
 #ghost { position: fixed; pointer-events: none; z-index: 50; padding: 4px 9px; border-radius: 6px; background: var(--accent); color: #fff; font-weight: 600; box-shadow: 0 4px 14px rgba(0,0,0,.2); display: none; }
 #newzone { position: absolute; left: 14px; bottom: 14px; padding: 10px 16px; border: 1.5px dashed var(--line); border-radius: 10px; color: var(--muted); background: var(--panel); }
 #zoomctl { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 4px; }
+/* The card or chip under the pointer; selection is the solid accent outline. */
+.chip.hovered { border-color: color-mix(in srgb, var(--ink) 45%, transparent); }
+.card.hovered { box-shadow: 0 0 0 2px color-mix(in srgb, var(--ink) 30%, transparent); }
+#hoverinfo { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); max-width: calc(100% - 420px); padding: 6px 10px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+#hoverinfo b { color: var(--ink); font-weight: 600; }
+#hoverinfo .sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin: 0 4px 0 10px; vertical-align: -1px; }
+@media (max-width: 700px) { #hoverinfo { display: none; } }
 aside { width: 380px; border-left: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; min-height: 0; }
 .tabs { display: flex; border-bottom: 1px solid var(--line); }
 .tabs button { flex: 1; border: 0; border-radius: 0; padding: 10px; background: transparent; border-bottom: 2px solid transparent; }
@@ -143,6 +150,7 @@ label.check { display: flex; gap: 6px; align-items: center; margin: 5px 0; }
   <div id="canvas">
     <div id="world"><svg id="edges"></svg><div id="cards"></div></div>
     <div id="newzone" data-drop="new">Drop here to put it in a new folder</div>
+    <div id="hoverinfo" hidden></div>
     <div id="zoomctl"><button id="zoomOut">−</button><button id="zoomFit">Fit</button><button id="zoomIn">+</button></div>
   </div>
   <aside>
@@ -539,13 +547,19 @@ function deps(id) {
   }
   return { out, inc };
 }
-function hover(id) {
-  document.querySelectorAll(".dep-in,.dep-out").forEach((e) => e.classList.remove("dep-in", "dep-out"));
-  if (!id) return;
+function hover(id, el) {
+  document.querySelectorAll(".dep-in,.dep-out,.hovered").forEach((e) => e.classList.remove("dep-in", "dep-out", "hovered"));
+  const info = $("#hoverinfo");
+  if (!id || !T.nodes[id]) { info.hidden = true; return; }
+  el?.classList.add("hovered");
   const units = new Set([...document.querySelectorAll("#cards [data-id]")].map((e) => e.dataset.id));
   const { out, inc } = deps(id);
   const mark = (map, cls) => { for (const t of map.keys()) { const u = unitOf(t, units); if (u && !within(u, id) && !within(id, u)) document.querySelectorAll(`#cards [data-id="${CSS.escape(u)}"]`).forEach((e) => e.classList.add(cls)); } };
   mark(out, "dep-out"); mark(inc, "dep-in");
+  info.replaceChildren(h("b", {}, plannedPath(id)),
+    h("span", { class: "sw", style: "background:var(--out)" }), `uses ${out.size}`,
+    h("span", { class: "sw", style: "background:var(--in)" }), `used by ${inc.size}`);
+  info.hidden = false;
 }
 function renderDetails() {
   const box = $("#details");
@@ -704,7 +718,7 @@ window.addEventListener("pointermove", (e) => {
   if (!drag) {
     const t = e.target.closest?.("#cards [data-id]");
     const id = t ? t.dataset.id : null;
-    if (id !== hover.last) { hover.last = id; hover(id); }
+    if (id !== hover.last) { hover.last = id; hover(id, t); }
     return;
   }
   const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;

@@ -56,7 +56,7 @@ macro calls aren't seen, and neither are TypeScript aliases set up outside
   then folders and files. They sit in rows by architecture layer, and arrows
   show who uses whom. A red arrow breaks a layer or `forbid` rule, and a
   dashed amber arrow is part of a dependency cycle. Hover a card to tint what
-  it uses (blue) and what uses it (amber).
+  it uses (teal) and what uses it (amber), and a line at the bottom names it.
 - **Drag** a folder or file onto a card or chip to move it inside. Drop it on a
   breadcrumb to move it up, or on "Drop here to put it in a new folder" for a
   new folder. Dropped on the workspace, it becomes a package of its own. Drag
