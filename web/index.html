@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Archboard</title>
+<style>
+:root {
+  --bg: #f6f6f3; --panel: #ffffff; --ink: #1d1d1b; --muted: #6d6c66; --line: #dcdbd4;
+  --card: #ffffff; --chip: #f1f0ea; --accent: #2f6fde; --accent-soft: #e3ecfc;
+  --bad: #d23c2f; --bad-soft: #fbe5e2; --good: #23864f; --good-soft: #def3e6; --warn: #b7791f;
+  --edge: #9a988f; --in: #c77d0a; --out: #2f6fde;
+  --l0: #7a5cd6; --l1: #2f6fde; --l2: #1b9a8a; --l3: #c77d0a; --l4: #8c8a80; --l5: #c2417a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615; --panel: #1f1f1d; --ink: #ecebe6; --muted: #9b9a93; --line: #34342f;
+    --card: #232321; --chip: #2d2d2a; --accent: #6b9cf0; --accent-soft: #23314a;
+    --bad: #f0776b; --bad-soft: #3d2320; --good: #5cc48a; --good-soft: #1e3427; --warn: #e0a84a;
+    --edge: #6f6d66; --in: #e0a84a; --out: #6b9cf0;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+button { font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:disabled { opacity: .5; cursor: default; }
+code, pre { font: 12px/1.45 ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+header { height: 46px; display: flex; align-items: center; gap: 12px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--panel); }
+header h1 { font-size: 14px; margin: 0; letter-spacing: .02em; }
+header .meta { color: var(--muted); }
+header .spacer { flex: 1; }
+#crumbs { display: flex; gap: 2px; align-items: center; min-width: 0; overflow: hidden; }
+.crumb { padding: 3px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; border: 1px dashed transparent; }
+.crumb:hover { background: var(--chip); }
+.crumb.last { font-weight: 600; }
+.crumb-sep { color: var(--muted); }
+main { position: absolute; top: 46px; left: 0; right: 0; bottom: 0; display: flex; }
+#canvas { flex: 1; position: relative; overflow: hidden; cursor: grab; }
+#canvas.panning { cursor: grabbing; }
+#world { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#edges { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.row-label { position: absolute; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); white-space: nowrap; }
+.row-band { position: absolute; border-radius: 14px; background: color-mix(in srgb, var(--lc) 6%, transparent); border: 1px solid color-mix(in srgb, var(--lc) 18%, transparent); }
+.card { position: absolute; width: 230px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border-top: 3px solid var(--lc, var(--l4)); }
+.card.selected { outline: 2px solid var(--accent); outline-offset: 1px; }
+.card .head { padding: 7px 10px 6px; display: flex; gap: 6px; align-items: baseline; cursor: move; user-select: none; }
+.card .head .name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.card .head .loc { color: var(--muted); font-size: 11px; }
+.card .body { padding: 0 6px 6px; display: flex; flex-direction: column; gap: 3px; min-height: 8px; }
+.chip { display: flex; gap: 6px; align-items: center; padding: 3px 7px; border-radius: 6px; background: var(--chip); cursor: grab; user-select: none; border: 1px solid transparent; }
+.chip .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip .loc { color: var(--muted); font-size: 11px; }
+.chip.selected { border-color: var(--accent); }
+.more { color: var(--muted); font-size: 11px; padding: 2px 7px; }
+.glyph { width: 10px; height: 10px; flex: none; border-radius: 2px; border: 1.5px solid var(--muted); }
+.glyph.dir { border-radius: 2px 2px 3px 3px; background: color-mix(in srgb, var(--muted) 25%, transparent); }
+.glyph.file { border-radius: 1px; width: 8px; }
+.glyph.package { border-radius: 50%; border-color: var(--accent); }
+.tag { font-size: 10px; padding: 0 5px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 600; text-transform: uppercase; }
+.tag.new { background: var(--good-soft); color: var(--good); }
+.tag.warn { background: var(--bad-soft); color: var(--bad); }
+.planned { border-style: dashed !important; border-color: var(--accent) !important; }
+.dep-out { box-shadow: inset 3px 0 0 var(--out); background: color-mix(in srgb, var(--out) 14%, var(--chip)); }
+.card.dep-out, .card.dep-in { background: color-mix(in srgb, var(--card) 85%, var(--out)); }
+.dep-in { box-shadow: inset 3px 0 0 var(--in); background: color-mix(in srgb, var(--in) 14%, var(--chip)); }
+.card.dep-in { background: color-mix(in srgb, var(--card) 85%, var(--in)); }
+.drop-ok { outline: 2px solid var(--good) !important; outline-offset: 1px; background: var(--good-soft) !important; }
+.drop-bad { outline: 2px solid var(--bad) !important; outline-offset: 1px; }
+#ghost { position: fixed; pointer-events: none; z-index: 50; padding: 4px 9px; border-radius: 6px; background: var(--accent); color: #fff; font-weight: 600; box-shadow: 0 4px 14px rgba(0,0,0,.2); display: none; }
+#newzone { position: absolute; left: 14px; bottom: 14px; padding: 10px 16px; border: 1.5px dashed var(--line); border-radius: 10px; color: var(--muted); background: var(--panel); }
+#zoomctl { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 4px; }
+aside { width: 380px; border-left: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; min-height: 0; }
+.tabs { display: flex; border-bottom: 1px solid var(--line); }
+.tabs button { flex: 1; border: 0; border-radius: 0; padding: 10px; background: transparent; border-bottom: 2px solid transparent; }
+.tabs button.on { border-bottom-color: var(--accent); font-weight: 600; }
+.tabs .count { font-size: 11px; color: var(--muted); margin-left: 4px; }
+.pane { flex: 1; overflow: auto; padding: 12px 14px; display: none; }
+.pane.on { display: block; }
+.pane h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 16px 0 6px; }
+.pane h3:first-child { margin-top: 0; }
+.op { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; margin-bottom: 5px; }
+.op .txt { flex: 1; word-break: break-word; }
+.op button { padding: 0 6px; border: 0; color: var(--muted); }
+.empty { color: var(--muted); }
+textarea { width: 100%; min-height: 70px; font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px; resize: vertical; }
+label.check { display: flex; gap: 6px; align-items: center; margin: 5px 0; }
+.status { padding: 8px 10px; border-radius: 7px; margin: 8px 0; }
+.status.good { background: var(--good-soft); color: var(--good); }
+.status.bad { background: var(--bad-soft); color: var(--bad); }
+.status.info { background: var(--chip); }
+.viol { padding: 6px 8px; border-left: 3px solid var(--bad); background: var(--bad-soft); border-radius: 0 6px 6px 0; margin-bottom: 5px; cursor: pointer; word-break: break-word; }
+.viol.known { border-left-color: var(--line); background: var(--chip); color: var(--muted); }
+.viol.gone { border-left-color: var(--good); background: var(--good-soft); }
+.viol .rule { font-size: 10px; font-weight: 700; text-transform: uppercase; margin-right: 6px; }
+.viol .at { display: block; color: var(--muted); font-size: 11px; }
+.change { padding: 4px 0; border-bottom: 1px solid var(--line); word-break: break-all; }
+.change .act { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--accent); margin-right: 6px; }
+#log { font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; }
+#log .l-step { font-weight: 700; margin-top: 10px; }
+#log .l-tool { color: var(--muted); }
+#log .l-error { color: var(--bad); }
+#log .l-ok { color: var(--good); font-weight: 600; }
+#log .l-text { border-left: 2px solid var(--accent); padding-left: 8px; margin: 4px 0; font-family: system-ui, sans-serif; }
+#log .l-result { color: var(--warn); }
+.details { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+.details .title { font-weight: 600; font-size: 14px; word-break: break-all; }
+.details .sub { color: var(--muted); word-break: break-all; }
+.details .acts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.deps { display: grid; grid-template-columns: 1fr auto; gap: 1px 8px; font-size: 12px; margin-top: 4px; }
+.deps a { color: var(--ink); cursor: pointer; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.deps a:hover { color: var(--accent); }
+.deps span { color: var(--muted); text-align: right; }
+.legend { display: flex; flex-direction: column; gap: 6px; }
+.legend div { padding-left: 9px; border-left: 3px solid var(--lc); }
+.legend b { display: block; }
+.legend small { color: var(--muted); }
+.menu { position: fixed; z-index: 60; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.15); padding: 4px; min-width: 170px; }
+.menu button { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 6px 10px; }
+.menu button:hover { background: var(--chip); }
+#modal { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: none; align-items: center; justify-content: center; z-index: 70; }
+#modal .box { background: var(--panel); border-radius: 12px; padding: 18px; width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 64px); display: flex; flex-direction: column; gap: 10px; }
+#modal .box h2 { margin: 0; font-size: 15px; }
+#modal pre { overflow: auto; background: var(--bg); border: 1px solid var(--line); padding: 12px; border-radius: 8px; margin: 0; white-space: pre-wrap; }
+#modal input { font: inherit; padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; }
+#modal .row { display: flex; gap: 8px; justify-content: flex-end; }
+.hint { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Archboard</h1>
+  <span class="meta" id="meta"></span>
+  <div id="crumbs"></div>
+  <div class="spacer"></div>
+  <label class="check"><input type="checkbox" id="edgesOn" checked> Dependencies</label>
+  <button id="btnFolder" title="Create a new folder inside the open level">New folder</button>
+  <button id="btnLayout" title="Forget dragged card positions on this level">Tidy</button>
+  <button id="btnRescan">Rescan</button>
+</header>
+<main>
+  <div id="canvas">
+    <div id="world"><svg id="edges"></svg><div id="cards"></div></div>
+    <div id="newzone" data-drop="new">Drop here to put it in a new folder</div>
+    <div id="zoomctl"><button id="zoomOut">−</button><button id="zoomFit">Fit</button><button id="zoomIn">+</button></div>
+  </div>
+  <aside>
+    <div class="tabs">
+      <button data-tab="plan" class="on">Plan<span class="count" id="cPlan"></span></button>
+      <button data-tab="rules">Rules<span class="count" id="cRules"></span></button>
+      <button data-tab="run">Run<span class="count" id="cRun"></span></button>
+    </div>
+    <div class="pane on" id="pane-plan">
+      <div id="details"></div>
+      <h3>Edits</h3>
+      <div id="ops"></div>
+      <div id="planStatus"></div>
+      <div id="changes"></div>
+      <h3>Instructions for Claude Code</h3>
+      <textarea id="instructions" placeholder="Anything the layout alone doesn't say, e.g. &quot;split utils into one module per concern&quot;"></textarea>
+      <h3>Apply</h3>
+      <label class="check"><input type="checkbox" id="optBranch" checked> Work on a new branch <code>archboard/…</code></label>
+      <label class="check"><input type="checkbox" id="optAccept"> Accept new rule violations</label>
+      <label class="check"><input type="checkbox" id="optDirty"> Allow uncommitted changes</label>
+      <div style="display:flex; gap:6px; margin-top:8px">
+        <button id="btnPrompt">Preview prompt</button>
+        <button id="btnApply" class="primary">Apply with Claude Code</button>
+        <button id="btnClear">Clear plan</button>
+      </div>
+      <p class="hint">Drag a folder or file onto another card or chip to move it into it, onto a breadcrumb to move it up, or onto the workspace to make it a package of its own. Double-click to open a level, right-click for more.</p>
+    </div>
+    <div class="pane" id="pane-rules">
+      <div id="rulesSummary"></div>
+      <h3>Violations</h3>
+      <div id="violations"></div>
+      <h3>Layers (top first)</h3>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="pane" id="pane-run">
+      <div style="display:flex; gap:6px; align-items:center"><span id="runStatus" class="empty">No run yet.</span><span class="spacer" style="flex:1"></span><button id="btnCancel" disabled>Cancel</button></div>
+      <div id="log"></div>
+    </div>
+  </aside>
+</main>
+<div id="ghost"></div>
+<div id="menu" class="menu" hidden></div>
+<div id="modal"><div class="box"></div></div>
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const h = (tag, attrs = {}, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "style") el.style.cssText = v;
+    else if (v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
+  return el;
+};
+// Saved per repository, since every repository's board is served on the same origin.
+const REPO = /*REPO*/"";
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(`archboard:${REPO}:${k}`); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(`archboard:${REPO}:${k}`, JSON.stringify(v)); } catch {} },
+};
+const LANGS = { rust: "Rust", js: "TS/JS", python: "Python", go: "Go" };
+
+const WS = "@";
+const CARD_W = 230, GAP_X = 36, GAP_Y = 46, ROW_PAD = 22, LABEL_W = 120, MAX_CHIPS = 14;
+let M = null;                       // /api/model response
+let base = {};                      // scanned nodes by id
+let plan = store.get("plan", { ops: [], instructions: "", next: 1 });
+let focus = store.get("focus", WS);
+let selected = null;
+let resolved = null, resolveError = null;
+let view = store.get("view", { x: 40, y: 30, k: 1 });
+let T = null;                       // planned tree
+let layout = {};                    // card id -> {x,y,w,h}
+
+// ---------- data ----------
+async function loadModel() {
+  const r = await fetch("/api/model");
+  if (!r.ok) { alert(await r.text()); return; }
+  M = await r.json();
+  base = M.model.nodes;
+  plan.ops = plan.ops.filter(validOp);
+  if (!nodeExists(focus)) focus = WS;
+  $("#meta").textContent = `${base[WS].name} · ${M.branch}`;
+  $("#instructions").value = plan.instructions || "";
+  renderRules();
+  refresh();
+}
+function nodeExists(id) { return T ? !!T.nodes[id] : !!base[id]; }
+function validOp(op) {
+  const known = (id) => base[id] || plan.ops.some((o) => o.op === "create" && o.id === id);
+  if (op.op === "create") return known(op.parent);
+  return known(op.node) && (op.op !== "move" || known(op.to));
+}
+
+function buildTree() {
+  const nodes = {};
+  for (const [id, n] of Object.entries(base)) nodes[id] = { ...n, tag: null, notes: [] };
+  for (const op of plan.ops) {
+    if (op.op === "create") {
+      const parent = nodes[op.parent];
+      if (!parent) continue;
+      nodes[op.id] = { id: op.id, name: op.name, kind: op.parent === WS ? "package" : "dir", langs: parent.langs || [], parent: op.parent, loc: 0, layer: parent.layer, tag: "new", notes: [] };
+      if (parent.kind === "file") parent.kind = "dir";
+    } else if (op.op === "move") {
+      const n = nodes[op.node], to = nodes[op.to];
+      if (!n || !to) continue;
+      n.parent = op.to; n.tag = n.tag || "moved";
+      if (op.to === WS) n.kind = "package"; else if (n.kind === "package") n.kind = "dir";
+      if (to.kind === "file") to.kind = "dir";
+    } else if (op.op === "rename") {
+      const n = nodes[op.node]; if (!n) continue;
+      n.name = op.name; n.tag = n.tag || "renamed";
+    } else if (op.op === "note") {
+      nodes[op.node]?.notes.push(op.text);
+    }
+  }
+  const children = {};
+  for (const n of Object.values(nodes)) if (n.parent) (children[n.parent] ||= []).push(n.id);
+  const rank = { package: 0, dir: 1, file: 2 };
+  for (const list of Object.values(children)) list.sort((a, b) => rank[nodes[a].kind] - rank[nodes[b].kind] || nodes[a].name.localeCompare(nodes[b].name));
+  return { nodes, children };
+}
+const kids = (id) => T.children[id] || [];
+function* ancestors(id) { while (id) { yield id; id = T.nodes[id]?.parent; } }
+const within = (inner, outer) => { for (const a of ancestors(inner)) if (a === outer) return true; return false; };
+function plannedPath(id) {
+  if (resolved?.paths?.[id]) return resolved.paths[id];
+  return id.startsWith("new:") ? "(new) " + T.nodes[id].name : id;
+}
+function layerIndex(name) { const i = M.layers.findIndex((l) => l.name === name); return i < 0 ? M.layers.length : i; }
+function layerColor(name) { const i = layerIndex(name); return i >= M.layers.length ? "var(--l4)" : `var(--l${i % 6})`; }
+
+// ---------- plan ----------
+function savePlan() { store.set("plan", plan); }
+function addOp(op) { plan.ops.push(op); savePlan(); refresh(); scheduleCheck(); }
+function removeOp(i) {
+  const op = plan.ops[i];
+  plan.ops.splice(i, 1);
+  if (op.op === "create") plan.ops = plan.ops.filter((o) => o.node !== op.id && o.to !== op.id && o.parent !== op.id);
+  savePlan(); refresh(); scheduleCheck();
+}
+function canMove(id, to) {
+  if (!id || !to || id === WS || id === "." || id === to) return false;
+  const n = T.nodes[id];
+  if (!n || n.parent === to) return false;
+  return !within(to, id);
+}
+function moveNode(id, to) {
+  if (!canMove(id, to)) return;
+  // A move straight back to where the node started cancels the earlier move.
+  const back = base[id] && base[id].parent === to;
+  if (back) { plan.ops = plan.ops.filter((o) => !(o.op === "move" && o.node === id)); savePlan(); refresh(); scheduleCheck(); return; }
+  addOp({ op: "move", node: id, to });
+}
+async function createFolder(parent, thenMove) {
+  const name = await ask(parent === WS ? "New package" : "New folder", "Name", "", parent === WS ? "Created next to the other packages" : `Inside ${plannedPath(parent)}`);
+  if (!name) return;
+  const id = "new:" + plan.next++;
+  plan.ops.push({ op: "create", id, parent, name });
+  if (thenMove && canMove(thenMove, id)) plan.ops.push({ op: "move", node: thenMove, to: id });
+  savePlan(); refresh(); scheduleCheck();
+}
+async function renameNode(id) {
+  const n = T.nodes[id];
+  const name = await ask("Rename", "New name", n.name, plannedPath(id));
+  if (name && name !== n.name) addOp({ op: "rename", node: id, name });
+}
+async function noteNode(id) {
+  const text = await ask("Note for Claude Code", "What should happen here?", "", plannedPath(id), true);
+  if (text) addOp({ op: "note", node: id, text });
+}
+
+let checkTimer = null;
+function scheduleCheck() {
+  clearTimeout(checkTimer);
+  plan.instructions = $("#instructions").value;
+  checkTimer = setTimeout(checkPlan, 250);
+}
+async function checkPlan() {
+  if (!plan.ops.length) { resolved = null; resolveError = null; renderPlan(); render(); return; }
+  const r = await fetch("/api/check", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(planBody()) });
+  if (r.ok) { resolved = await r.json(); resolveError = null; } else { resolved = null; resolveError = await r.text(); }
+  renderPlan(); render();
+}
+const planBody = () => ({ ops: plan.ops.map(({ ...o }) => o), instructions: $("#instructions").value });
+
+// ---------- rendering ----------
+function refresh() { T = buildTree(); if (!T.nodes[focus]) focus = WS; render(); renderPlan(); }
+
+function render() {
+  renderCrumbs();
+  const cards = kids(focus);
+  const host = $("#cards");
+  host.replaceChildren();
+  const saved = store.get("pos:" + focus, {});
+  const rows = new Map();
+  for (const id of cards) {
+    const li = layerIndex(T.nodes[id].layer);
+    if (!rows.has(li)) rows.set(li, []);
+    rows.get(li).push(id);
+  }
+  const els = {};
+  for (const id of cards) { els[id] = cardEl(id); host.append(els[id]); }
+  layout = {};
+  let y = 0;
+  const bands = [];
+  const maxRowW = Math.max(900, Math.ceil(Math.sqrt(cards.length)) * (CARD_W + GAP_X) * 1.6);
+  for (const li of [...rows.keys()].sort((a, b) => a - b)) {
+    const ids = rows.get(li);
+    let x = LABEL_W, rowTop = y, lineH = 0, right = x;
+    for (const id of ids) {
+      const hgt = els[id].offsetHeight;
+      if (x + CARD_W > LABEL_W + maxRowW && x > LABEL_W) { x = LABEL_W; y += lineH + GAP_Y / 2; lineH = 0; }
+      layout[id] = { x, y: y + ROW_PAD, w: CARD_W, h: hgt };
+      lineH = Math.max(lineH, hgt + ROW_PAD * 2); right = Math.max(right, x + CARD_W);
+      x += CARD_W + GAP_X;
+    }
+    const name = li < M.layers.length ? M.layers[li].name : "no layer";
+    bands.push({ name, color: li < M.layers.length ? `var(--l${li % 6})` : "var(--l4)", top: rowTop, bottom: y + lineH, right });
+    y += lineH + GAP_Y;
+  }
+  for (const b of bands) {
+    host.prepend(h("div", { class: "row-band", style: `left:${LABEL_W - 16}px;top:${b.top}px;width:${b.right - LABEL_W + 32}px;height:${b.bottom - b.top}px;--lc:${b.color}` }));
+    host.append(h("div", { class: "row-label", style: `left:0;top:${b.top + ROW_PAD}px;color:${b.color}` }, b.name));
+  }
+  for (const id of cards) {
+    if (saved[id]) Object.assign(layout[id], saved[id]);
+    els[id].style.left = layout[id].x + "px"; els[id].style.top = layout[id].y + "px";
+  }
+  applyView();
+  drawEdges();
+  highlightSelection();
+}
+
+function renderCrumbs() {
+  const c = $("#crumbs");
+  c.replaceChildren();
+  const chain = [...ancestors(focus)].reverse();
+  chain.forEach((id, i) => {
+    if (i) c.append(h("span", { class: "crumb-sep" }, "/"));
+    c.append(h("span", { class: "crumb" + (i === chain.length - 1 ? " last" : ""), "data-drop": id, "data-id": id, onclick: () => setFocus(id) }, T.nodes[id].name));
+  });
+}
+
+function glyph(kind) { return h("span", { class: "glyph " + kind }); }
+function tagEl(n) {
+  if (!n.tag) return null;
+  return h("span", { class: "tag" + (n.tag === "new" ? " new" : "") }, n.tag);
+}
+// Only worth showing on a package, or anywhere when the codebase mixes languages.
+function langText(n) { return (n.kind === "package" || (base[WS]?.langs?.length || 0) > 1) && n.langs?.length ? n.langs.map((l) => LANGS[l] || l).join("+") : ""; }
+function locText(n) { return n.loc ? (n.loc >= 1000 ? (n.loc / 1000).toFixed(1) + "k" : n.loc) : ""; }
+
+function cardEl(id) {
+  const n = T.nodes[id];
+  const children = kids(id);
+  const body = h("div", { class: "body" });
+  for (const cid of children.slice(0, MAX_CHIPS)) body.append(chipEl(cid));
+  if (children.length > MAX_CHIPS) body.append(h("div", { class: "more" }, `+${children.length - MAX_CHIPS} more, double-click to open`));
+  const warn = cardViolations(id);
+  const el = h("div", { class: "card" + (n.tag ? " planned" : ""), "data-id": id, "data-drop": id, style: `--lc:${layerColor(n.layer)}` },
+    h("div", { class: "head", "data-drag": id },
+      glyph(n.kind), h("span", { class: "name", title: plannedPath(id) }, n.name), tagEl(n),
+      warn ? h("span", { class: "tag warn", title: warn + " rule violation(s) inside" }, "!" + warn) : null,
+      h("span", { class: "loc" }, [langText(n), locText(n)].filter(Boolean).join(" · "))),
+    body);
+  return el;
+}
+function chipEl(id) {
+  const n = T.nodes[id];
+  const sub = kids(id).length;
+  return h("div", { class: "chip" + (n.tag ? " planned" : ""), "data-id": id, "data-drop": id, "data-drag": id, title: plannedPath(id) + (n.notes.length ? "\nNote: " + n.notes.join("\n") : "") },
+    glyph(n.kind), h("span", { class: "name" }, n.name + (sub ? ` (${sub})` : "")), tagEl(n), h("span", { class: "loc" }, locText(n)));
+}
+
+// Violations by node, after the plan when one is checked.
+function currentViolations() {
+  if (resolved) {
+    const byPath = {};
+    for (const [id, p] of Object.entries(resolved.paths)) byPath[p] = id;
+    return resolved.violations.map((v) => ({ ...v, ids: v.nodes.map((p) => byPath[p] || p) }));
+  }
+  return M.violations.map((v) => ({ ...v, ids: v.nodes }));
+}
+function cardViolations(id) {
+  let c = 0;
+  for (const v of currentViolations()) if (v.ids.some((x) => T.nodes[x] && within(x, id))) c++;
+  return c;
+}
+
+// Deepest unit on screen (a chip or a card) that holds `id`.
+function unitOf(id, units) { for (const a of ancestors(id)) if (units.has(a)) return a; return null; }
+
+function drawEdges() {
+  const svg = $("#edges");
+  svg.replaceChildren();
+  if (!$("#edgesOn").checked) return;
+  const cards = new Set(kids(focus));
+  const bad = new Set(), cyc = [];
+  for (const v of currentViolations()) {
+    if (v.rule === "layer" || v.rule === "forbid") bad.add(v.ids[0] + ">" + v.ids[1]);
+    if (v.rule === "cycle") cyc.push(v.ids);
+  }
+  const agg = new Map();
+  for (const e of M.model.edges) {
+    const a = unitOf(e.from, cards), b = unitOf(e.to, cards);
+    if (!a || !b || a === b) continue;
+    const k = a + ">" + b;
+    const g = agg.get(k) || { a, b, count: 0, bad: false, cyc: false };
+    g.count += e.count;
+    if (bad.has(e.from + ">" + e.to)) g.bad = true;
+    if (!g.cyc) for (const members of cyc) {
+      const ma = members.find((m) => T.nodes[m] && within(e.from, m)), mb = members.find((m) => T.nodes[m] && within(e.to, m));
+      if (ma && mb && ma !== mb) { g.cyc = true; break; }
+    }
+    agg.set(k, g);
+  }
+  const ns = "http://www.w3.org/2000/svg";
+  const defs = document.createElementNS(ns, "defs");
+  for (const [name, color] of [["n", "var(--edge)"], ["b", "var(--bad)"], ["c", "var(--warn)"]]) {
+    const m = document.createElementNS(ns, "marker");
+    m.setAttribute("id", "arr-" + name); m.setAttribute("viewBox", "0 0 10 10"); m.setAttribute("refX", "9"); m.setAttribute("refY", "5");
+    m.setAttribute("markerWidth", "7"); m.setAttribute("markerHeight", "7"); m.setAttribute("orient", "auto-start-reverse");
+    const p = document.createElementNS(ns, "path"); p.setAttribute("d", "M0,0 L10,5 L0,10 z"); p.setAttribute("fill", color);
+    m.append(p); defs.append(m);
+  }
+  svg.append(defs);
+  for (const g of agg.values()) {
+    const A = layout[g.a], B = layout[g.b];
+    if (!A || !B) continue;
+    const [x1, y1] = border(A, B), [x2, y2] = border(B, A);
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2, dx = x2 - x1, dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1, bend = Math.min(40, len * 0.12);
+    const cx = mx - (dy / len) * bend, cy = my + (dx / len) * bend;
+    const path = document.createElementNS(ns, "path");
+    path.setAttribute("d", `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`);
+    const kind = g.bad ? "b" : g.cyc ? "c" : "n";
+    path.setAttribute("stroke", kind === "b" ? "var(--bad)" : kind === "c" ? "var(--warn)" : "var(--edge)");
+    path.setAttribute("stroke-width", (0.8 + Math.log2(1 + g.count) * 0.55).toFixed(2));
+    path.setAttribute("fill", "none");
+    path.setAttribute("opacity", kind === "n" ? "0.55" : "0.9");
+    if (kind === "c") path.setAttribute("stroke-dasharray", "5 4");
+    path.setAttribute("marker-end", `url(#arr-${kind})`);
+    const t = document.createElementNS(ns, "title");
+    t.textContent = `${T.nodes[g.a].name} uses ${T.nodes[g.b].name}: ${g.count} path(s)${g.bad ? ", breaks a layer rule" : g.cyc ? ", part of a cycle" : ""}`;
+    path.append(t);
+    svg.append(path);
+  }
+}
+function border(A, B) {
+  const ax = A.x + A.w / 2, ay = A.y + A.h / 2, bx = B.x + B.w / 2, by = B.y + B.h / 2;
+  const dx = bx - ax, dy = by - ay;
+  if (!dx && !dy) return [ax, ay];
+  const sx = (A.w / 2 + 4) / Math.abs(dx || 1e-9), sy = (A.h / 2 + 4) / Math.abs(dy || 1e-9);
+  const s = Math.min(sx, sy);
+  return [ax + dx * s, ay + dy * s];
+}
+
+function applyView() {
+  $("#world").style.transform = `translate(${view.x}px,${view.y}px) scale(${view.k})`;
+  store.set("view", view);
+}
+function fit() {
+  const boxes = Object.values(layout);
+  if (!boxes.length) return;
+  const minX = Math.min(0, ...boxes.map((b) => b.x)), minY = Math.min(...boxes.map((b) => b.y));
+  const maxX = Math.max(...boxes.map((b) => b.x + b.w)), maxY = Math.max(...boxes.map((b) => b.y + b.h));
+  const c = $("#canvas").getBoundingClientRect();
+  view.k = Math.min(1.2, Math.max(0.25, Math.min((c.width - 60) / (maxX - minX), (c.height - 90) / (maxY - minY))));
+  view.x = 30 - minX * view.k; view.y = 24 - minY * view.k;
+  applyView();
+}
+function setFocus(id) {
+  if (!T.nodes[id] || (!kids(id).length && id !== WS)) return;
+  focus = id; store.set("focus", focus);
+  render(); fit();
+}
+
+// ---------- selection, hover, details ----------
+function select(id) { selected = id; highlightSelection(); renderDetails(); }
+function highlightSelection() {
+  document.querySelectorAll(".selected").forEach((e) => e.classList.remove("selected"));
+  if (selected) document.querySelectorAll(`[data-id="${CSS.escape(selected)}"]`).forEach((e) => e.closest(".crumb") || e.classList.add("selected"));
+}
+function deps(id) {
+  const out = new Map(), inc = new Map();
+  for (const e of M.model.edges) {
+    const f = T.nodes[e.from] && within(e.from, id), t = T.nodes[e.to] && within(e.to, id);
+    if (f && !t) out.set(e.to, (out.get(e.to) || 0) + e.count);
+    if (t && !f) inc.set(e.from, (inc.get(e.from) || 0) + e.count);
+  }
+  return { out, inc };
+}
+function hover(id) {
+  document.querySelectorAll(".dep-in,.dep-out").forEach((e) => e.classList.remove("dep-in", "dep-out"));
+  if (!id) return;
+  const units = new Set([...document.querySelectorAll("#cards [data-id]")].map((e) => e.dataset.id));
+  const { out, inc } = deps(id);
+  const mark = (map, cls) => { for (const t of map.keys()) { const u = unitOf(t, units); if (u && !within(u, id) && !within(id, u)) document.querySelectorAll(`#cards [data-id="${CSS.escape(u)}"]`).forEach((e) => e.classList.add(cls)); } };
+  mark(out, "dep-out"); mark(inc, "dep-in");
+}
+function renderDetails() {
+  const box = $("#details");
+  box.replaceChildren();
+  if (!selected || !T.nodes[selected]) return;
+  const n = T.nodes[selected];
+  const { out, inc } = deps(selected);
+  const list = (map) => {
+    const top = [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+    if (!top.length) return h("div", { class: "empty" }, "none");
+    return h("div", { class: "deps" }, top.flatMap(([id, c]) => [h("a", { onclick: () => reveal(id), title: id }, id), h("span", {}, c)]));
+  };
+  box.append(h("div", { class: "details" },
+    h("div", { class: "title" }, n.name, " ", tagEl(n)),
+    h("div", { class: "sub" }, plannedPath(selected) !== selected && !selected.startsWith("new:") ? `${selected} → ${plannedPath(selected)}` : plannedPath(selected)),
+    h("div", { class: "sub" }, `${n.kind}${n.langs?.length ? " · " + n.langs.map((l) => LANGS[l] || l).join(", ") : ""} · ${n.loc || 0} lines · layer: ${n.layer || "none"}${n.root_file ? " · " + n.root_file : ""}`),
+    n.notes.length ? h("div", { class: "sub" }, "Note: " + n.notes.join(" / ")) : null,
+    h("div", { class: "acts" },
+      kids(selected).length ? h("button", { onclick: () => setFocus(selected) }, "Open") : null,
+      h("button", { onclick: () => renameNode(selected) }, "Rename"),
+      h("button", { onclick: () => createFolder(selected) }, "New folder inside"),
+      h("button", { onclick: () => noteNode(selected) }, "Add note")),
+    h("h3", {}, `Uses (${out.size})`), list(out),
+    h("h3", {}, `Used by (${inc.size})`), list(inc)));
+}
+function reveal(id) {
+  if (!T.nodes[id]) return;
+  const parent = T.nodes[id].parent;
+  const level = kids(focus).includes(id) || kids(focus).some((c) => kids(c).includes(id)) ? focus : (T.nodes[parent]?.parent && kids(T.nodes[parent].parent).includes(parent) ? T.nodes[parent].parent : parent);
+  if (level && level !== focus) setFocus(level);
+  select(id);
+  switchTab("plan");
+}
+
+// ---------- side panel ----------
+function describeOp(op) {
+  const nm = (id) => (T.nodes[id] ? T.nodes[id].name : id);
+  switch (op.op) {
+    case "move": return [h("b", {}, "Move "), h("code", {}, base[op.node]?.id ?? nm(op.node)), " into ", h("code", {}, op.to === WS ? "workspace (new package)" : nm(op.to))];
+    case "rename": return [h("b", {}, "Rename "), h("code", {}, base[op.node]?.id ?? nm(op.node)), " to ", h("code", {}, op.name)];
+    case "create": return [h("b", {}, "Create "), h("code", {}, op.name), " in ", h("code", {}, nm(op.parent))];
+    case "note": return [h("b", {}, "Note on "), h("code", {}, nm(op.node)), ": " + op.text];
+  }
+}
+function renderPlan() {
+  $("#cPlan").textContent = plan.ops.length ? plan.ops.length : "";
+  const ops = $("#ops");
+  ops.replaceChildren();
+  if (!plan.ops.length) ops.append(h("div", { class: "empty" }, "No edits yet. Drag folders and files around the board."));
+  plan.ops.forEach((op, i) => ops.append(h("div", { class: "op" }, h("div", { class: "txt" }, describeOp(op)), h("button", { title: "Undo this edit", onclick: () => removeOp(i) }, "✕"))));
+  const st = $("#planStatus"), ch = $("#changes");
+  st.replaceChildren(); ch.replaceChildren();
+  if (resolveError) st.append(h("div", { class: "status bad" }, resolveError));
+  else if (resolved) {
+    const added = resolved.added.length, removed = resolved.removed.length;
+    st.append(h("div", { class: "status " + (added ? "bad" : "good") },
+      added ? `The plan breaks ${added} architecture rule(s).` : "The plan keeps the architecture rules.",
+      removed ? ` It fixes ${removed}.` : ""));
+    if (resolved.changes.length) {
+      ch.append(h("h3", {}, "Resulting changes"));
+      for (const c of resolved.changes) ch.append(h("div", { class: "change" }, h("span", { class: "act" }, c.action), c.from ? h("code", {}, c.from) : null, c.from ? " → " : null, h("code", {}, c.to)));
+    }
+    for (const v of resolved.added) ch.append(violEl(v, "new"));
+    for (const v of resolved.removed) ch.append(violEl(v, "gone"));
+  }
+  if (selected) renderDetails();
+}
+function violEl(v, state) {
+  return h("div", { class: "viol" + (state === "known" ? " known" : state === "gone" ? " gone" : ""), title: v.key, onclick: () => { const id = (v.ids || v.nodes)[0]; if (T.nodes[id]) reveal(id); } },
+    h("span", { class: "rule" }, state === "gone" ? "fixed " + v.rule : v.rule), v.message,
+    v.samples?.length ? h("span", { class: "at" }, v.samples.slice(0, 2).join("  ")) : null);
+}
+function renderRules() {
+  const known = new Set(M.known);
+  const fresh = M.violations.filter((v) => !known.has(v.key));
+  $("#cRules").textContent = fresh.length ? fresh.length : "";
+  $("#rulesSummary").replaceChildren(h("div", { class: "status " + (fresh.length ? "bad" : "good") },
+    fresh.length ? `${fresh.length} violation(s) not in architecture.baseline: \`archboard check\` fails.` : `\`archboard check\` passes (${M.violations.length} known violation(s) in the baseline).`));
+  const list = $("#violations");
+  list.replaceChildren();
+  if (!M.violations.length) list.append(h("div", { class: "empty" }, "None."));
+  for (const v of fresh) list.append(violEl(v, "new"));
+  for (const v of M.violations.filter((v) => known.has(v.key))) list.append(violEl(v, "known"));
+  const legend = $("#legend");
+  legend.replaceChildren(...M.layers.map((l, i) => h("div", { style: `--lc:var(--l${i % 6})` }, h("b", {}, l.name), h("small", {}, l.description))));
+  if (!M.layers.length) legend.append(h("div", { class: "empty" }, "No [[layer]] in architecture.toml."));
+}
+function switchTab(name) {
+  document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === name));
+  document.querySelectorAll(".pane").forEach((p) => p.classList.toggle("on", p.id === "pane-" + name));
+}
+
+// ---------- modal ----------
+function ask(title, label, value, sub, multiline) {
+  return new Promise((done) => {
+    const box = $("#modal .box");
+    const input = multiline ? h("textarea", {}) : h("input", { type: "text" });
+    input.value = value || "";
+    const close = (v) => { $("#modal").style.display = "none"; done(v); };
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter" && (!multiline || e.metaKey || e.ctrlKey)) close(input.value.trim()); if (e.key === "Escape") close(null); });
+    box.replaceChildren(h("h2", {}, title), sub ? h("div", { class: "hint" }, sub) : null, h("label", { class: "hint" }, label), input,
+      h("div", { class: "row" }, h("button", { onclick: () => close(null) }, "Cancel"), h("button", { class: "primary", onclick: () => close(input.value.trim()) }, "OK")));
+    $("#modal").style.display = "flex";
+    input.focus(); input.select();
+  });
+}
+function showText(title, text) {
+  const box = $("#modal .box");
+  const close = () => { $("#modal").style.display = "none"; };
+  box.replaceChildren(h("h2", {}, title), h("pre", {}, text), h("div", { class: "row" }, h("button", { onclick: () => navigator.clipboard?.writeText(text) }, "Copy"), h("button", { class: "primary", onclick: close }, "Close")));
+  $("#modal").style.display = "flex";
+}
+
+// ---------- context menu ----------
+function openMenu(x, y, id) {
+  const m = $("#menu");
+  const item = (label, fn) => h("button", { onclick: () => { m.hidden = true; fn(); } }, label);
+  m.replaceChildren(
+    kids(id).length ? item("Open", () => setFocus(id)) : null,
+    item("Rename…", () => renameNode(id)),
+    item("New folder inside…", () => createFolder(id)),
+    item("Note for Claude Code…", () => noteNode(id)),
+    T.nodes[id].parent && T.nodes[id].parent !== WS && id !== "." ? item("Move up one level", () => moveNode(id, T.nodes[T.nodes[id].parent].parent)) : null,
+    T.nodes[id].kind !== "package" ? item("Extract into a new package", () => moveNode(id, WS)) : null,
+  );
+  m.style.left = x + "px"; m.style.top = y + "px"; m.hidden = false;
+}
+document.addEventListener("pointerdown", (e) => { if (!e.target.closest("#menu")) $("#menu").hidden = true; });
+
+// ---------- drag, drop, pan, zoom ----------
+let drag = null;
+const canvas = $("#canvas");
+canvas.addEventListener("contextmenu", (e) => {
+  const t = e.target.closest("[data-id]");
+  if (!t || !t.closest("#cards")) return;
+  e.preventDefault(); select(t.dataset.id); openMenu(e.clientX, e.clientY, t.dataset.id);
+});
+canvas.addEventListener("dblclick", (e) => {
+  const t = e.target.closest("[data-id]");
+  if (t && t.closest("#cards")) setFocus(t.dataset.id);
+});
+canvas.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  const handle = e.target.closest("[data-drag]");
+  if (handle && handle.closest("#cards")) {
+    const id = handle.dataset.drag;
+    const isCard = handle.classList.contains("head");
+    drag = { kind: isCard ? "card" : "chip", id, sx: e.clientX, sy: e.clientY, moved: false, el: isCard ? handle.closest(".card") : handle, start: isCard ? { ...layout[id] } : null };
+    e.stopPropagation();
+  } else if (!e.target.closest("#newzone,#zoomctl")) {
+    drag = { kind: "pan", sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y, moved: false };
+    canvas.classList.add("panning");
+  }
+});
+window.addEventListener("pointermove", (e) => {
+  if (!drag) {
+    const t = e.target.closest?.("#cards [data-id]");
+    const id = t ? t.dataset.id : null;
+    if (id !== hover.last) { hover.last = id; hover(id); }
+    return;
+  }
+  const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+  if (!drag.moved && Math.hypot(dx, dy) < 5) return;
+  drag.moved = true;
+  if (drag.kind === "pan") { view.x = drag.vx + dx; view.y = drag.vy + dy; applyView(); return; }
+  if (drag.kind === "card") {
+    layout[drag.id].x = drag.start.x + dx / view.k; layout[drag.id].y = drag.start.y + dy / view.k;
+    drag.el.style.left = layout[drag.id].x + "px"; drag.el.style.top = layout[drag.id].y + "px";
+    drag.el.style.zIndex = 5;
+    drawEdges();
+  } else {
+    const g = $("#ghost");
+    g.textContent = T.nodes[drag.id].name; g.style.display = "block";
+    g.style.left = e.clientX + 12 + "px"; g.style.top = e.clientY + 8 + "px";
+  }
+  markTarget(dropTarget(e));
+});
+window.addEventListener("pointerup", (e) => {
+  if (!drag) return;
+  const d = drag; drag = null;
+  canvas.classList.remove("panning");
+  $("#ghost").style.display = "none";
+  const target = d.moved && d.kind !== "pan" ? dropTarget(e, d) : null;
+  markTarget(null);
+  if (!d.moved) {
+    if (d.kind !== "pan") select(d.id); else select(null);
+    return;
+  }
+  if (d.kind === "pan") return;
+  if (target && target.ok) {
+    if (d.kind === "card") { layout[d.id] = d.start; }
+    if (target.id === "new") createFolder(focus, d.id);
+    else moveNode(d.id, target.id);
+    return;
+  }
+  if (d.kind === "card") {
+    d.el.style.zIndex = "";
+    const saved = store.get("pos:" + focus, {});
+    saved[d.id] = { x: layout[d.id].x, y: layout[d.id].y };
+    store.set("pos:" + focus, saved);
+  }
+});
+function dropTarget(e, d = drag) {
+  if (!d || d.kind === "pan") return null;
+  for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
+    if (d.el.contains(el)) continue;
+    const t = el.closest("[data-drop]");
+    if (!t) continue;
+    const id = t.dataset.drop;
+    if (id === "new") return { el: t, id, ok: true };
+    return { el: t, id, ok: canMove(d.id, id) };
+  }
+  return null;
+}
+let marked = null;
+function markTarget(t) {
+  if (marked) marked.classList.remove("drop-ok", "drop-bad");
+  marked = t ? t.el : null;
+  if (marked) marked.classList.add(t.ok ? "drop-ok" : "drop-bad");
+}
+canvas.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  const px = e.clientX - r.left, py = e.clientY - r.top;
+  const k = Math.min(2.5, Math.max(0.2, view.k * Math.exp(-e.deltaY * 0.0015)));
+  view.x = px - ((px - view.x) * k) / view.k; view.y = py - ((py - view.y) * k) / view.k; view.k = k;
+  applyView();
+}, { passive: false });
+const zoomBy = (f) => { const r = canvas.getBoundingClientRect(); const px = r.width / 2, py = r.height / 2, k = Math.min(2.5, Math.max(0.2, view.k * f)); view.x = px - ((px - view.x) * k) / view.k; view.y = py - ((py - view.y) * k) / view.k; view.k = k; applyView(); };
+$("#zoomIn").onclick = () => zoomBy(1.2);
+$("#zoomOut").onclick = () => zoomBy(1 / 1.2);
+$("#zoomFit").onclick = fit;
+
+// ---------- run ----------
+let since = 0, polling = null;
+async function apply() {
+  if (!plan.ops.length && !$("#instructions").value.trim()) return;
+  const body = { plan: planBody(), options: { new_branch: $("#optBranch").checked, accept_violations: $("#optAccept").checked, allow_dirty: $("#optDirty").checked } };
+  const r = await fetch("/api/apply", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) { alert(await r.text()); return; }
+  $("#log").replaceChildren(); since = 0;
+  switchTab("run");
+  poll();
+}
+async function poll() {
+  clearTimeout(polling);
+  const r = await fetch("/api/job?since=" + since);
+  const j = await r.json();
+  const log = $("#log");
+  for (const l of j.log) log.append(h("div", { class: "l-" + l.kind }, l.text));
+  since = j.total;
+  if (j.log.length) log.parentElement.scrollTop = log.parentElement.scrollHeight;
+  const st = j.status;
+  $("#runStatus").textContent = st ? { running: "Running…", done: "Applied and verified.", failed: "Failed.", cancelled: "Cancelled." }[st] : "No run yet.";
+  $("#runStatus").className = st === "done" ? "" : st === "failed" ? "" : "empty";
+  $("#cRun").textContent = st === "running" ? "●" : "";
+  $("#btnCancel").disabled = st !== "running";
+  $("#btnApply").disabled = st === "running";
+  if (st === "running") polling = setTimeout(poll, 700);
+  else if (st === "done") { plan = { ops: [], instructions: "", next: plan.next }; savePlan(); resolved = null; await loadModel(); }
+  else if (st) await loadModel();
+}
+
+// ---------- wiring ----------
+document.querySelectorAll(".tabs button").forEach((b) => (b.onclick = () => switchTab(b.dataset.tab)));
+$("#edgesOn").onchange = drawEdges;
+$("#btnRescan").onclick = loadModel;
+$("#btnFolder").onclick = () => createFolder(focus);
+$("#btnLayout").onclick = () => { store.set("pos:" + focus, {}); render(); fit(); };
+$("#btnClear").onclick = () => { if (confirm("Clear every edit in the plan?")) { plan = { ops: [], instructions: "", next: plan.next }; $("#instructions").value = ""; savePlan(); resolved = null; resolveError = null; refresh(); } };
+$("#instructions").addEventListener("input", () => { plan.instructions = $("#instructions").value; savePlan(); });
+$("#btnPrompt").onclick = async () => {
+  const r = await fetch("/api/prompt", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(planBody()) });
+  showText("Prompt for Claude Code", await r.text());
+};
+$("#btnApply").onclick = apply;
+$("#btnCancel").onclick = async () => { await fetch("/api/job/cancel", { method: "POST" }); poll(); };
+window.addEventListener("resize", drawEdges);
+window.addEventListener("keydown", (e) => {
+  if (e.target.closest("input,textarea")) return;
+  if (e.key === "Backspace" && focus !== WS) setFocus(T.nodes[focus].parent);
+  if ((e.metaKey || e.ctrlKey) && e.key === "z" && plan.ops.length) { e.preventDefault(); removeOp(plan.ops.length - 1); }
+});
+
+loadModel().then(() => { if (!store.get("view-set", false)) { fit(); store.set("view-set", true); } checkPlan(); poll(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+# archboard's own architecture, checked in CI by `archboard check`.
+
+[[layer]]
+name = "cli"
+description = "Commands and the board's HTTP API"
+paths = ["src/main"]
+
+[[layer]]
+name = "apply"
+description = "Carrying a plan out with Claude Code and verifying it"
+paths = ["src/job"]
+
+[[layer]]
+name = "plan"
+description = "Board edits, the paths they come to, and the prompt"
+paths = ["src/plan"]
+
+[[layer]]
+name = "rules"
+description = "Architecture rules checked against a model"
+paths = ["src/rules"]
+
+[[layer]]
+name = "scan"
+description = "Reading a repository into packages, folders, files and imports"
+paths = ["src/model", "src/lang"]
+
+[[layer]]
+name = "foundation"
+description = "Configuration and globs"
+paths = ["src/config", "src/glob"]
+
+[[forbid]]
+from = "src/lang"
+to = "src/model"
+reason = "languages only read source; the model is built from them"
+
+[rules]
+acyclic = ["src/*", "src/lang/*"]
+module_doc = ["src/*", "src/lang/*"]
+max_file_lines = 600
+
+[verify]
+commands = ["cargo test --locked", "cargo clippy --locked --all-targets -- -D warnings"]
