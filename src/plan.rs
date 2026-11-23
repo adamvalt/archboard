@@ -104,6 +104,15 @@ struct Draft {
 }
 
 /// Applies `plan` to `model` and checks the result.
+///
+/// # Errors
+///
+/// When an edit names an unknown node, moves a node into itself, gives an
+/// invalid name, or would put two nodes at one path.
+///
+/// # Panics
+///
+/// Never: the lookups it unwraps are of nodes checked to exist just before.
 #[expect(clippy::too_many_lines, reason = "one pass per step: apply the edits, derive paths, list changes, check")]
 pub fn resolve(model: &Model, config: &Config, plan: &Plan) -> Result<Resolved> {
     let mut drafts: BTreeMap<String, Draft> = model
@@ -320,6 +329,7 @@ fn planned_model(model: &Model, config: &Config, drafts: &BTreeMap<String, Draft
 }
 
 /// The prompt that asks Claude Code to carry out `resolved`.
+#[must_use]
 pub fn prompt(repo: &std::path::Path, model: &Model, config: &Config, plan: &Plan, resolved: &Resolved) -> String {
     let mut p = String::new();
     p.push_str(
@@ -411,6 +421,7 @@ fn changed_langs(model: &Model, resolved: &Resolved) -> Vec<Lang> {
 
 /// Checks a rescanned codebase against the plan: every change landed where it
 /// was drawn, and no rule broke that the plan did not accept.
+#[must_use]
 pub fn verify(after: &Model, config: &Config, resolved: &Resolved, baseline: &[String]) -> Vec<String> {
     let mut problems = Vec::new();
     for c in &resolved.changes {

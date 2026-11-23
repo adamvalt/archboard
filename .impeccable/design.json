@@ -1,0 +1,933 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-23T00:49:35+00:00",
+  "title": "Design System: archboard",
+  "extensions": {
+    "colorMeta": {
+      "chrome": {
+        "role": "neutral",
+        "displayName": "Chrome Grey",
+        "canonical": "#eef0f3",
+        "oklch": "oklch(95.4% 0.005 258)",
+        "dark": "#13171c",
+        "cssVar": "--chrome",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#404244",
+          "#606164",
+          "#818285",
+          "#a3a5a8",
+          "#c7c9cc",
+          "#edeff2"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "dark": "#1a1f26",
+        "cssVar": "--sheet",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "dark": "#1a1f26",
+        "cssVar": "--panel",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#17202b",
+        "oklch": "oklch(24.0% 0.025 254)",
+        "dark": "#e6ebf1",
+        "cssVar": "--ink",
+        "tonalRamp": [
+          "#070c11",
+          "#1f262d",
+          "#3b434d",
+          "#59626e",
+          "#788391",
+          "#9ca6b3",
+          "#c1cad6",
+          "#e7effa"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "canonical": "#3d4a5a",
+        "oklch": "oklch(40.4% 0.032 254)",
+        "dark": "#c3ccd7",
+        "cssVar": "--ink-2",
+        "tonalRamp": [
+          "#060c13",
+          "#1e2630",
+          "#394350",
+          "#566272",
+          "#768495",
+          "#99a6b7",
+          "#becada",
+          "#e5f0fd"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#5f6b7a",
+        "oklch": "oklch(52.3% 0.028 254)",
+        "dark": "#8e9aa9",
+        "cssVar": "--muted",
+        "tonalRamp": [
+          "#070c12",
+          "#1f262e",
+          "#3a434e",
+          "#586270",
+          "#778493",
+          "#9ba6b5",
+          "#c0cad8",
+          "#e6f0fb"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#d5dbe3",
+        "oklch": "oklch(88.9% 0.013 256)",
+        "dark": "#2e3742",
+        "cssVar": "--rule",
+        "tonalRamp": [
+          "#080b11",
+          "#21252b",
+          "#3e4249",
+          "#5d6269",
+          "#7d838a",
+          "#a0a6ad",
+          "#c4cad2",
+          "#e9eff7"
+        ]
+      },
+      "rule-2": {
+        "role": "neutral",
+        "displayName": "Rule 2",
+        "canonical": "#e6eaef",
+        "oklch": "oklch(93.5% 0.008 254)",
+        "dark": "#262e38",
+        "cssVar": "--rule-2",
+        "tonalRamp": [
+          "#090b0f",
+          "#222529",
+          "#3f4246",
+          "#5e6266",
+          "#7f8387",
+          "#a2a5aa",
+          "#c6c9ce",
+          "#ebeff4"
+        ]
+      },
+      "band-a": {
+        "role": "neutral",
+        "displayName": "Band Light",
+        "canonical": "#f7f9fb",
+        "oklch": "oklch(98.1% 0.003 248)",
+        "dark": "#1c222a",
+        "cssVar": "--band-a",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606163",
+          "#818284",
+          "#a3a5a7",
+          "#c7c9cb",
+          "#edeff1"
+        ]
+      },
+      "band-b": {
+        "role": "neutral",
+        "displayName": "Band Shade",
+        "canonical": "#eff3f7",
+        "oklch": "oklch(96.2% 0.007 248)",
+        "dark": "#20272f",
+        "cssVar": "--band-b",
+        "tonalRamp": [
+          "#090b0e",
+          "#222528",
+          "#3f4246",
+          "#5e6265",
+          "#7f8386",
+          "#a2a5a9",
+          "#c6cacd",
+          "#ebeff3"
+        ]
+      },
+      "gutter": {
+        "role": "neutral",
+        "displayName": "Gutter Grey",
+        "canonical": "#e3e9f0",
+        "oklch": "oklch(93.1% 0.011 252)",
+        "dark": "#232a33",
+        "cssVar": "--gutter",
+        "tonalRamp": [
+          "#080c10",
+          "#21262b",
+          "#3e4248",
+          "#5d6268",
+          "#7d8389",
+          "#a0a6ac",
+          "#c4cad1",
+          "#e9eff6"
+        ]
+      },
+      "container": {
+        "role": "primary",
+        "displayName": "Container Blue",
+        "canonical": "#2c6bb3",
+        "oklch": "oklch(52.4% 0.131 254)",
+        "dark": "#2f67a6",
+        "cssVar": "--container",
+        "tonalRamp": [
+          "#00082a",
+          "#00244f",
+          "#114278",
+          "#2b62a2",
+          "#4684ce",
+          "#70a8ec",
+          "#9acdff",
+          "#c5f2ff"
+        ]
+      },
+      "container-ink": {
+        "role": "primary",
+        "displayName": "Container Ink",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "dark": "#f4f8fd",
+        "cssVar": "--container-ink",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "container-ink-2": {
+        "role": "primary",
+        "displayName": "Container Ink 2",
+        "canonical": "#d9e7f7",
+        "oklch": "oklch(92.2% 0.026 252)",
+        "dark": "#c4d7ee",
+        "cssVar": "--container-ink-2",
+        "tonalRamp": [
+          "#070c12",
+          "#1f262e",
+          "#3a434d",
+          "#58626f",
+          "#778492",
+          "#9ba6b4",
+          "#c0cad7",
+          "#e6f0fb"
+        ]
+      },
+      "component": {
+        "role": "primary",
+        "displayName": "Component Blue",
+        "canonical": "#d4e6f8",
+        "oklch": "oklch(91.7% 0.031 248)",
+        "dark": "#233a54",
+        "cssVar": "--component",
+        "tonalRamp": [
+          "#060c13",
+          "#1d262f",
+          "#38434f",
+          "#556371",
+          "#748494",
+          "#98a7b6",
+          "#bdcbd9",
+          "#e4f0fd"
+        ]
+      },
+      "component-line": {
+        "role": "primary",
+        "displayName": "Component Line",
+        "canonical": "#9cc0e6",
+        "oklch": "oklch(79.5% 0.067 250)",
+        "dark": "#3d5d82",
+        "cssVar": "--component-line",
+        "tonalRamp": [
+          "#010c1b",
+          "#12263b",
+          "#2b445d",
+          "#476482",
+          "#6486a9",
+          "#89a8ca",
+          "#b0cceb",
+          "#d8f2ff"
+        ]
+      },
+      "component-ink": {
+        "role": "primary",
+        "displayName": "Component Ink",
+        "canonical": "#0e2a47",
+        "oklch": "oklch(28.0% 0.063 252)",
+        "dark": "#dce9f8",
+        "cssVar": "--component-ink",
+        "tonalRamp": [
+          "#010c1a",
+          "#14263a",
+          "#2e445c",
+          "#496481",
+          "#6785a7",
+          "#8ca8c8",
+          "#b2cce9",
+          "#daf1ff"
+        ]
+      },
+      "component-ink-2": {
+        "role": "primary",
+        "displayName": "Component Ink 2",
+        "canonical": "#3b5878",
+        "oklch": "oklch(45.2% 0.063 252)",
+        "dark": "#a3bbd6",
+        "cssVar": "--component-ink-2",
+        "tonalRamp": [
+          "#010c1a",
+          "#14263a",
+          "#2e445c",
+          "#496481",
+          "#6785a7",
+          "#8ca8c8",
+          "#b2cce9",
+          "#daf1ff"
+        ]
+      },
+      "code": {
+        "role": "primary",
+        "displayName": "Code White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "dark": "#1f262f",
+        "cssVar": "--code",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "code-line": {
+        "role": "primary",
+        "displayName": "Code Rule Blue",
+        "canonical": "#b7cbe1",
+        "oklch": "oklch(83.4% 0.038 251)",
+        "dark": "#3a4a5d",
+        "cssVar": "--code-line",
+        "tonalRamp": [
+          "#050c14",
+          "#1b2632",
+          "#364352",
+          "#536374",
+          "#728499",
+          "#96a7ba",
+          "#bbcbdc",
+          "#e2f0ff"
+        ]
+      },
+      "select": {
+        "role": "neutral",
+        "displayName": "Select Ink",
+        "canonical": "#17202b",
+        "oklch": "oklch(24.0% 0.025 254)",
+        "dark": "#e6ebf1",
+        "cssVar": "--select",
+        "tonalRamp": [
+          "#070c11",
+          "#1f262d",
+          "#3b434d",
+          "#59626e",
+          "#788391",
+          "#9ca6b3",
+          "#c1cad6",
+          "#e7effa"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Focus Blue",
+        "canonical": "#2c6bb3",
+        "oklch": "oklch(52.4% 0.131 254)",
+        "dark": "#7fb0ea",
+        "cssVar": "--focus",
+        "tonalRamp": [
+          "#00082a",
+          "#00244f",
+          "#114278",
+          "#2b62a2",
+          "#4684ce",
+          "#70a8ec",
+          "#9acdff",
+          "#c5f2ff"
+        ]
+      },
+      "edge": {
+        "role": "neutral",
+        "displayName": "Edge Grey",
+        "canonical": "#7d8899",
+        "oklch": "oklch(62.4% 0.029 259)",
+        "dark": "#6f7c8d",
+        "cssVar": "--edge",
+        "tonalRamp": [
+          "#070b12",
+          "#1f252f",
+          "#3b424e",
+          "#586270",
+          "#788394",
+          "#9ca6b6",
+          "#c0cad8",
+          "#e7effc"
+        ]
+      },
+      "plan": {
+        "role": "tertiary",
+        "displayName": "Plan Green",
+        "canonical": "#1d7a4f",
+        "oklch": "oklch(51.5% 0.109 158)",
+        "dark": "#4fbf86",
+        "cssVar": "--plan",
+        "tonalRamp": [
+          "#001202",
+          "#002f16",
+          "#024f30",
+          "#23724b",
+          "#409669",
+          "#6db88e",
+          "#99dbb4",
+          "#c5fedc"
+        ]
+      },
+      "plan-soft": {
+        "role": "tertiary",
+        "displayName": "Plan Green Soft",
+        "canonical": "#e3f3ea",
+        "oklch": "oklch(95.0% 0.021 161)",
+        "dark": "#1b3428",
+        "cssVar": "--plan-soft",
+        "tonalRamp": [
+          "#070d09",
+          "#1f2723",
+          "#3b453f",
+          "#58655e",
+          "#78867e",
+          "#9ba9a1",
+          "#c0cdc6",
+          "#e7f2eb"
+        ]
+      },
+      "good": {
+        "role": "tertiary",
+        "displayName": "Good Green",
+        "canonical": "#1d7a4f",
+        "oklch": "oklch(51.5% 0.109 158)",
+        "dark": "#4fbf86",
+        "cssVar": "--good",
+        "tonalRamp": [
+          "#001202",
+          "#002f16",
+          "#024f30",
+          "#23724b",
+          "#409669",
+          "#6db88e",
+          "#99dbb4",
+          "#c5fedc"
+        ]
+      },
+      "good-soft": {
+        "role": "tertiary",
+        "displayName": "Good Green Soft",
+        "canonical": "#e3f3ea",
+        "oklch": "oklch(95.0% 0.021 161)",
+        "dark": "#1b3428",
+        "cssVar": "--good-soft",
+        "tonalRamp": [
+          "#070d09",
+          "#1f2723",
+          "#3b453f",
+          "#58655e",
+          "#78867e",
+          "#9ba9a1",
+          "#c0cdc6",
+          "#e7f2eb"
+        ]
+      },
+      "bad": {
+        "role": "tertiary",
+        "displayName": "Rule Red",
+        "canonical": "#c42b1c",
+        "oklch": "oklch(53.6% 0.191 30)",
+        "dark": "#f07a6b",
+        "cssVar": "--bad",
+        "tonalRamp": [
+          "#2c0000",
+          "#550000",
+          "#800400",
+          "#ae281a",
+          "#dd4635",
+          "#fd7562",
+          "#ffa18d",
+          "#ffcdba"
+        ]
+      },
+      "bad-soft": {
+        "role": "tertiary",
+        "displayName": "Rule Red Soft",
+        "canonical": "#fbe7e4",
+        "oklch": "oklch(94.3% 0.022 28)",
+        "dark": "#3a211e",
+        "cssVar": "--bad-soft",
+        "tonalRamp": [
+          "#100908",
+          "#2c2221",
+          "#4b3f3d",
+          "#6c5d5b",
+          "#8f7e7b",
+          "#b1a19e",
+          "#d4c5c3",
+          "#f9ebe9"
+        ]
+      },
+      "cycle": {
+        "role": "tertiary",
+        "displayName": "Cycle Amber",
+        "canonical": "#b26a00",
+        "oklch": "oklch(59.1% 0.132 65)",
+        "dark": "#e3a54a",
+        "cssVar": "--cycle",
+        "tonalRamp": [
+          "#1f0100",
+          "#421700",
+          "#673200",
+          "#8e5000",
+          "#b76f10",
+          "#d8954f",
+          "#f8bb7f",
+          "#ffe3ae"
+        ]
+      },
+      "cycle-soft": {
+        "role": "tertiary",
+        "displayName": "Cycle Amber Soft",
+        "canonical": "#fbefd9",
+        "oklch": "oklch(95.6% 0.032 83)",
+        "dark": "#3a2d18",
+        "cssVar": "--cycle-soft",
+        "tonalRamp": [
+          "#0f0a03",
+          "#2a2419",
+          "#494133",
+          "#69604f",
+          "#8c816d",
+          "#aea491",
+          "#d1c8b7",
+          "#f6eedf"
+        ]
+      },
+      "uses": {
+        "role": "secondary",
+        "displayName": "Uses Violet",
+        "canonical": "#6447c9",
+        "oklch": "oklch(50.4% 0.192 288)",
+        "dark": "#a690f5",
+        "cssVar": "--uses",
+        "tonalRamp": [
+          "#0f0037",
+          "#270c60",
+          "#422b8d",
+          "#6048bc",
+          "#8068ec",
+          "#a190ff",
+          "#c4b8ff",
+          "#e9e1ff"
+        ]
+      },
+      "usedby": {
+        "role": "secondary",
+        "displayName": "Used-by Teal",
+        "canonical": "#0d8577",
+        "oklch": "oklch(55.5% 0.097 182)",
+        "dark": "#4cc3b5",
+        "cssVar": "--usedby",
+        "tonalRamp": [
+          "#00120d",
+          "#002f27",
+          "#004f45",
+          "#037165",
+          "#2b9587",
+          "#61b7a9",
+          "#90dacd",
+          "#bdfef2"
+        ]
+      }
+    },
+    "colorSchemes": {
+      "light": ":root",
+      "dark": "@media (prefers-color-scheme: dark) :root",
+      "note": "Every color token is remapped in the dark scheme; 'dark' in colorMeta is the remapped value."
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The archboard wordmark and dialog headings; the largest text on the board."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Element box names, layer names, the diagram title (details pane names step to 14px)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base size of the whole page, controls included; tabular figures."
+      },
+      "body-small": {
+        "displayName": "Body small",
+        "purpose": "Chips, ledgers, run log, pane section headings (650, ink-2), key heading; status blocks at 12.5px."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Sublines, layer descriptions, key entries, edge labels (650)."
+      },
+      "type-line": {
+        "displayName": "C4 type line",
+        "purpose": "The [Package: Rust] line and size under each box name; counts on chips."
+      },
+      "label": {
+        "displayName": "Ledger key",
+        "purpose": "Uppercase column keys inside fixed-column ledgers and the demo tag; never above a heading."
+      },
+      "stereotype": {
+        "displayName": "UML stereotype",
+        "purpose": "Italic «moved», «new», «renamed» in guillemets."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Paths, branches, code, dependency lists, run-log timestamps and tool lines (11-12px)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow",
+        "value": "0 1px 2px rgba(23, 32, 43, .06), 0 2px 6px rgba(23, 32, 43, .05)",
+        "dark": "0 1px 2px rgba(0, 0, 0, .35)",
+        "purpose": "Resting: sheet, element boxes, overlays, DSM table."
+      },
+      {
+        "name": "shadow-lift",
+        "value": "0 2px 4px rgba(23, 32, 43, .10), 0 6px 12px rgba(23, 32, 43, .12)",
+        "dark": "0 2px 4px rgba(0, 0, 0, .4), 0 6px 12px rgba(0, 0, 0, .4)",
+        "purpose": "Lifted: dragging box, drag ghost, context menu, dialogs."
+      },
+      {
+        "name": "ring-hover",
+        "value": "0 0 0 1px color-mix(in srgb, var(--ink) 40%, transparent)",
+        "purpose": "Added to the resting shadow on the hovered element box."
+      },
+      {
+        "name": "ring-uses",
+        "value": "0 0 0 2px var(--uses)",
+        "purpose": "Boxes the hovered element uses."
+      },
+      {
+        "name": "ring-usedby",
+        "value": "0 0 0 2px var(--usedby)",
+        "purpose": "Boxes that use the hovered element."
+      },
+      {
+        "name": "focus-halo",
+        "value": "0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent)",
+        "purpose": "Text field focus, with the border turning focus."
+      },
+      {
+        "name": "dialog-backdrop",
+        "value": "rgba(15, 20, 28, .38)",
+        "purpose": "Dialog backdrop fill."
+      }
+    ],
+    "outlines": [
+      {
+        "name": "focus-visible",
+        "value": "2px solid var(--focus); outline-offset: 2px",
+        "purpose": "Global keyboard focus."
+      },
+      {
+        "name": "selected",
+        "value": "2px solid var(--select); outline-offset: 2px (1px on chips)",
+        "purpose": "Selected element."
+      },
+      {
+        "name": "planned",
+        "value": "1.5px dashed var(--plan); outline-offset: 2px",
+        "purpose": "Element changed by the plan; paired with a stereotype."
+      },
+      {
+        "name": "drop-ok / drop-bad",
+        "value": "2px solid var(--good) / var(--bad); outline-offset: 2px",
+        "purpose": "Drag target valid or refused."
+      }
+    ],
+    "edges": {
+      "ordinary": {
+        "stroke": "var(--edge)",
+        "dasharray": "6 4",
+        "opacity": "0.35 for 1-2 imports, 0.75 above"
+      },
+      "rule-break": {
+        "stroke": "var(--bad)",
+        "dasharray": "6 4",
+        "opacity": "0.95"
+      },
+      "cycle": {
+        "stroke": "var(--cycle)",
+        "dasharray": "2 4",
+        "opacity": "0.95"
+      },
+      "width": "0.9 + 4.3 * (ln(1+count)/ln(1+max))^1.4 screen px (non-scaling), +0.5 for rule breaks and cycles",
+      "arrowhead": "open chevron M1,1 L9,5 L1,9, stroke 1.6, 8px, userSpaceOnUse",
+      "focusFade": "unrelated arrows fade to 0.08 while an element is hovered"
+    },
+    "motion": [
+      {
+        "name": "state-transition",
+        "value": "0.15s (default ease)",
+        "purpose": "Background, border, box-shadow and opacity on controls, boxes, edges, key chevron."
+      },
+      {
+        "name": "scan-pulse",
+        "value": "1.6s ease-in-out infinite alternate, opacity .25 to .9",
+        "purpose": "Scanning progress bar."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce disables all transitions and animations",
+        "purpose": "Accessibility."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "narrow",
+        "value": "980px",
+        "purpose": "Side panel 320px; key trims to three entries; repo metadata hidden (shown in demo)."
+      },
+      {
+        "name": "mobile",
+        "value": "720px",
+        "purpose": "Panel stacks under the canvas at 45%; key, brand and metadata hidden; breadcrumbs collapse to the last crumb."
+      }
+    ],
+    "layout": {
+      "header": "48px",
+      "sidePanel": "384px (320px under 980px)",
+      "elementBox": "240px",
+      "gapX": "40px",
+      "gapY": "22px",
+      "bandPad": "22px",
+      "gutter": "180-340px, widened as fitted zoom shrinks",
+      "minBand": "132px at fitted zoom",
+      "overlayInset": "14px",
+      "zoomInvariantUnit": "1px / max(zoom, .45)"
+    },
+    "fonts": {
+      "sans": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif",
+      "mono": "ui-monospace, \"SF Mono\", \"Cascadia Mono\", Menlo, Consolas, monospace",
+      "numeric": "tabular-nums on body",
+      "fetched": false
+    }
+  },
+  "components": [
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Every ordinary action: compact, hairline-bordered, panel fill.",
+      "html": "<button class=\"ds-btn\"><svg class=\"ds-i\" viewBox=\"0 0 16 16\"><path d=\"M13.5 8a5.5 5.5 0 1 1-1.6-3.9\"/><path d=\"M13.5 2.5v3h-3\"/></svg>Rescan</button>",
+      "css": ".ds-btn { font: 13px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; color: var(--ink); background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; height: 28px; padding: 0 10px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: background-color .15s, border-color .15s; } .ds-btn:hover { border-color: var(--muted); background: color-mix(in srgb, var(--ink) 4%, var(--panel)); } .ds-btn:active { background: color-mix(in srgb, var(--ink) 8%, var(--panel)); } .ds-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; } .ds-i { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one primary action per pane: Apply with Claude Code.",
+      "html": "<button class=\"ds-btn-primary\">Apply with Claude Code</button>",
+      "css": ".ds-btn-primary { font: 600 13px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; color: var(--container-ink); background: var(--container); border: 1px solid var(--container); border-radius: 4px; height: 28px; padding: 0 10px; cursor: pointer; transition: background-color .15s; } .ds-btn-primary:hover { background: color-mix(in srgb, #000 12%, var(--container)); } .ds-btn-primary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: .45; cursor: default; }"
+    },
+    {
+      "name": "Segmented Switch",
+      "kind": "nav",
+      "refersTo": "segmented-pressed",
+      "description": "Diagram/Matrix view switch; the pressed segment inverts to ink.",
+      "html": "<div class=\"ds-seg\"><button aria-pressed=\"true\">Diagram</button><button aria-pressed=\"false\">Matrix</button></div>",
+      "css": ".ds-seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; } .ds-seg button { font: 13px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; color: var(--ink); background: var(--panel); border: 0; height: 26px; padding: 0 10px; cursor: pointer; } .ds-seg button + button { border-left: 1px solid var(--rule); } .ds-seg button:hover { background: color-mix(in srgb, var(--ink) 4%, var(--panel)); } .ds-seg button[aria-pressed=\"true\"] { background: var(--ink); color: var(--sheet); } .ds-seg button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Instructions and rename fields: sheet fill, focus border with a soft halo.",
+      "html": "<textarea class=\"ds-input\" placeholder=\"Anything the layout alone doesn't say\"></textarea>",
+      "css": ".ds-input { width: 100%; min-height: 72px; font: 13px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; color: var(--ink); background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 9px; resize: vertical; } .ds-input::placeholder { color: var(--muted); } .ds-input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent); }"
+    },
+    {
+      "name": "Panel Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Plan, Rules, Run with an ink underline and pill counts.",
+      "html": "<div class=\"ds-tabs\"><button class=\"on\">Plan <span class=\"ds-count\">3</span></button><button>Rules <span class=\"ds-count ds-count-bad\">19</span></button><button>Run</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 4px; padding: 0 8px; border-bottom: 1px solid var(--rule); background: var(--panel); } .ds-tabs button { font: 13px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; display: inline-flex; align-items: center; gap: 6px; height: 42px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: transparent; color: var(--muted); cursor: pointer; } .ds-tabs button:hover { color: var(--ink); } .ds-tabs button.on { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); } .ds-tabs button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; } .ds-count { font-size: 11px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--chrome); color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; } .ds-count-bad { background: var(--bad); color: #fff; }"
+    },
+    {
+      "name": "Chips",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Children listed inside an element box, coloured by C4 kind; planned ones carry a stereotype.",
+      "html": "<div class=\"ds-chips\"><div class=\"ds-chip ds-k-package\"><span class=\"ds-n\">core</span><span class=\"ds-c\">2.7k</span></div><div class=\"ds-chip ds-k-dir\"><span class=\"ds-n\">plugins</span><span class=\"ds-c\">11 · 84.8k</span></div><div class=\"ds-chip\"><span class=\"ds-n\">command.rs</span><span class=\"ds-c\">557</span></div><div class=\"ds-chip ds-planned\"><span class=\"ds-n\">wire.rs</span><span class=\"ds-st\">«moved»</span></div></div>",
+      "css": ".ds-chips { display: flex; flex-direction: column; gap: 3px; width: 228px; } .ds-chip { font: 12px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; font-variant-numeric: tabular-nums; display: flex; gap: 6px; align-items: center; height: 24px; padding: 0 7px; border-radius: 3px; border: 1px solid var(--rule-2); background: var(--code); color: var(--ink-2); cursor: grab; } .ds-chip:hover { border-color: color-mix(in srgb, var(--ink) 45%, transparent); } .ds-chip .ds-n { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-chip .ds-c { color: var(--muted); font-size: 11px; } .ds-k-dir { background: color-mix(in srgb, var(--component) 55%, var(--sheet)); border-color: color-mix(in srgb, var(--component-line) 60%, transparent); color: var(--component-ink); } .ds-k-package { background: var(--container); border-color: var(--container); color: var(--container-ink); } .ds-k-package .ds-c { color: var(--container-ink-2); } .ds-planned { outline: 1.5px dashed var(--plan); outline-offset: 2px; } .ds-st { font-size: 11px; font-style: italic; color: var(--plan); }"
+    },
+    {
+      "name": "C4 Element Box",
+      "kind": "card",
+      "refersTo": "element-package-head",
+      "description": "The board's unit: a 240px box with a kind-coloured head, C4 type line and size, and child chips.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-head\"><div class=\"ds-title\"><svg class=\"ds-i\" viewBox=\"0 0 16 16\"><path d=\"M1.5 3.5h5l1 1.5h7v8.5h-13z\"/><path d=\"M1.5 6.5h13\"/></svg><span class=\"ds-name\">app</span><span class=\"ds-badge\">19</span></div><div class=\"ds-type\">[Package: Rust]<span class=\"ds-loc\">24.1k lines</span></div></div><div class=\"ds-body\"><div class=\"ds-row\">plugins<span>84.8k</span></div><div class=\"ds-row\">harness<span>7.1k</span></div><div class=\"ds-more\">22 more; double-click to open</div></div></div>",
+      "css": ".ds-card { width: 240px; font: 13px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; font-variant-numeric: tabular-nums; background: var(--sheet); border: 1px solid var(--container); border-radius: 4px; box-shadow: 0 1px 2px rgba(23,32,43,.06), 0 2px 6px rgba(23,32,43,.05); transition: box-shadow .15s; } .ds-card:hover { box-shadow: 0 1px 2px rgba(23,32,43,.06), 0 2px 6px rgba(23,32,43,.05), 0 0 0 1px color-mix(in srgb, var(--ink) 40%, transparent); } .ds-card:focus-within, .ds-card:focus-visible { outline: 2px solid var(--select); outline-offset: 2px; } .ds-head { padding: 8px 10px 7px; background: var(--container); color: var(--container-ink); border-radius: 3px 3px 0 0; cursor: move; } .ds-title { display: flex; align-items: center; gap: 6px; } .ds-name { flex: 1; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-badge { font-size: 10.5px; font-weight: 700; height: 16px; padding: 0 5px; border-radius: 8px; background: var(--bad); color: #fff; display: inline-flex; align-items: center; } .ds-type { display: flex; gap: 6px; font-size: 11px; margin-top: 1px; color: var(--container-ink-2); } .ds-loc { margin-left: auto; } .ds-body { padding: 6px; display: flex; flex-direction: column; gap: 3px; } .ds-row { display: flex; justify-content: space-between; height: 24px; align-items: center; padding: 0 7px; font-size: 12px; border-radius: 3px; border: 1px solid var(--rule-2); color: var(--ink-2); } .ds-row span { color: var(--muted); font-size: 11px; } .ds-more { color: var(--muted); font-size: 11px; padding: 3px 7px 1px; } .ds-i { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Layer Band",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "A flat full-width layer band with its label gutter: name, description and allowed direction.",
+      "html": "<div class=\"ds-band\"><div class=\"ds-gutter\"><div class=\"ds-lname\">engine crates</div><div class=\"ds-ldesc\">Reusable Bevy plugins and Bevy-free engines.</div><div class=\"ds-lrule\"><svg viewBox=\"0 0 16 16\"><path d=\"M8 2.5v11M4 9.5l4 4 4-4\"/></svg>may use the layers below</div></div><div class=\"ds-lane\"></div></div>",
+      "css": ".ds-band { display: flex; min-height: 132px; width: 420px; background: var(--band-a); border-top: 1px solid var(--rule-2); font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; } .ds-gutter { width: 180px; padding: 14px; display: flex; flex-direction: column; gap: 4px; background: color-mix(in srgb, var(--gutter) 55%, transparent); border-right: 1px solid var(--rule-2); } .ds-lname { font-weight: 650; font-size: 13px; color: var(--ink); } .ds-ldesc { font-size: 11.5px; line-height: 1.4; color: var(--ink-2); } .ds-lrule { margin-top: auto; display: flex; gap: 5px; align-items: center; font-size: 11px; color: var(--ink-2); } .ds-lrule svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; } .ds-lane { flex: 1; }"
+    },
+    {
+      "name": "Dependency Key",
+      "kind": "custom",
+      "refersTo": "overlay",
+      "description": "The diagram key: kind swatches, planned outline and the three UML dependency lines.",
+      "html": "<div class=\"ds-key\"><b>Key</b><span><i class=\"ds-sw ds-sw-pkg\"></i>Package</span><span><i class=\"ds-sw ds-sw-dir\"></i>Folder</span><span><i class=\"ds-sw ds-sw-file\"></i>File</span><span><i class=\"ds-sw ds-sw-plan\"></i>Planned</span><span><svg class=\"ds-ln\" viewBox=\"0 0 26 10\"><line x1=\"0\" y1=\"5\" x2=\"21\" y2=\"5\" stroke=\"var(--edge)\" stroke-width=\"1.5\" stroke-dasharray=\"5 3\"/><path d=\"M19 1.5 L25 5 L19 8.5\" fill=\"none\" stroke=\"var(--edge)\" stroke-width=\"1.5\"/></svg>uses</span><span><svg class=\"ds-ln\" viewBox=\"0 0 26 10\"><line x1=\"0\" y1=\"5\" x2=\"21\" y2=\"5\" stroke=\"var(--bad)\" stroke-width=\"2\" stroke-dasharray=\"5 3\"/><path d=\"M19 1.5 L25 5 L19 8.5\" fill=\"none\" stroke=\"var(--bad)\" stroke-width=\"2\"/></svg>breaks a rule</span><span><svg class=\"ds-ln\" viewBox=\"0 0 26 10\"><line x1=\"0\" y1=\"5\" x2=\"21\" y2=\"5\" stroke=\"var(--cycle)\" stroke-width=\"2\" stroke-dasharray=\"2 3\"/><path d=\"M19 1.5 L25 5 L19 8.5\" fill=\"none\" stroke=\"var(--cycle)\" stroke-width=\"2\"/></svg>cycle</span></div>",
+      "css": ".ds-key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 6px 12px; min-height: 36px; background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; box-shadow: 0 1px 2px rgba(23,32,43,.06), 0 2px 6px rgba(23,32,43,.05); font: 11.5px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; color: var(--ink-2); } .ds-key b { font-size: 12px; font-weight: 650; color: var(--ink); } .ds-key span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; } .ds-sw { width: 16px; height: 11px; border-radius: 2px; border: 1px solid; display: inline-block; } .ds-sw-pkg { background: var(--container); border-color: var(--container); } .ds-sw-dir { background: var(--component); border-color: var(--component-line); } .ds-sw-file { background: var(--code); border-color: var(--code-line); } .ds-sw-plan { background: transparent; border: 1.5px dashed var(--plan); } .ds-ln { width: 26px; height: 10px; overflow: visible; }"
+    },
+    {
+      "name": "UML Note",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "A note left on an element, drawn as a UML dog-eared note.",
+      "html": "<div class=\"ds-note\">Split this crate once the wire format settles.</div>",
+      "css": ".ds-note { position: relative; max-width: 320px; padding: 7px 22px 7px 10px; font: 12px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; color: var(--ink); background: color-mix(in srgb, var(--cycle) 10%, var(--sheet)); border: 1px solid color-mix(in srgb, var(--cycle) 45%, transparent); clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); } .ds-note::after { content: \"\"; position: absolute; right: 0; top: 0; width: 12px; height: 12px; background: color-mix(in srgb, var(--cycle) 30%, var(--sheet)); clip-path: polygon(0 0, 0 100%, 100% 100%); }"
+    },
+    {
+      "name": "Status Block",
+      "kind": "custom",
+      "refersTo": "status-bad",
+      "description": "Plan and rules verdicts: good, bad or info, with an icon.",
+      "html": "<div class=\"ds-status ds-status-bad\"><svg class=\"ds-i\" viewBox=\"0 0 16 16\"><path d=\"M8 1.8l6.5 12H1.5z\"/><path d=\"M8 6.5v3.5M8 12v.01\"/></svg><span>The plan adds 2 rule violations.</span></div><div class=\"ds-status ds-status-good\"><svg class=\"ds-i\" viewBox=\"0 0 16 16\"><path d=\"M3 8.5l3 3 7-7\"/></svg><span>The plan keeps every rule.</span></div>",
+      "css": ".ds-status { display: flex; gap: 8px; align-items: flex-start; padding: 9px 11px; margin: 10px 0; border-radius: 4px; border: 1px solid; font: 12.5px/1.45 system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif; } .ds-status .ds-i { margin-top: 1px; width: 14px; height: 14px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; } .ds-status-good { background: var(--good-soft); color: var(--good); border-color: color-mix(in srgb, var(--good) 35%, transparent); } .ds-status-bad { background: var(--bad-soft); color: var(--bad); border-color: color-mix(in srgb, var(--bad) 35%, transparent); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Living Architecture Diagram",
+    "overview": "**Creative North Star: \"The Living Architecture Diagram\"**\n\nThe board is a software-architecture diagram that happens to be editable. Every visual device comes from a notation engineers already read: layered-architecture bands, C4 element boxes, UML dependency arrows, stereotypes and notes, and a dependency structure matrix. Nothing is a borrowed metaphor; if a device has no precedent in that canon, it does not belong on the board.\n\nThe world is a white diagram sheet laid on cool grey chrome. The sheet carries flat, full-width layer bands with a label gutter at the left; C4 boxes sit in the bands, coloured by kind; dashed open-headed arrows run between them, thickening with the number of imports they stand for. The chrome around the sheet (header, side panel, floating overlays) is quiet, square-cornered and hairline-ruled, so the diagram carries all the colour. Density is high but calm: a 13px system sans with tabular figures, 4px corners, and depth only where something is lifted.\n\nPlan edits are drawn in the same notation as the diagram: a dashed green outline and a UML stereotype (`«moved»`, `«new»`, `«renamed»`). Rule breaks are red, cycles amber. Every diagram view has a title (top left) and a key (bottom), as a published diagram would.",
+    "keyCharacteristics": [
+      "White sheet on cool grey chrome; colour lives in the diagram, not the chrome.",
+      "C4 kind colouring: package solid container blue, folder light component blue, file white with a blue rule.",
+      "UML dashed dependency lines with open arrowheads; weight follows import count.",
+      "Red means a broken rule, amber a cycle, green a planned change. Never decoration.",
+      "One system sans with tabular figures; mono only for paths and code.",
+      "Fully token-driven light and dark schemes from the same custom properties."
+    ],
+    "rules": [
+      {
+        "name": "The Notation Colour Rule",
+        "body": "Every hue on the board means something a diagram key can name: element kind, rule break, cycle, plan, or hover direction. A colour that would not earn an entry in the key does not ship.",
+        "section": "colors"
+      },
+      {
+        "name": "The Quiet Chrome Rule",
+        "body": "Header, panel and overlays stay on `panel`, `chrome` and the rules. The only saturated fill in the chrome is the primary action and live counts.",
+        "section": "colors"
+      },
+      {
+        "name": "The Zoom-Invariant Label Rule",
+        "body": "Text that names a layer (gutter name, description, rule line) and edge labels are counter-scaled by the zoom (`1px / max(zoom, .45)`), so they stay readable at any zoom. Element boxes scale with the diagram.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Figures are tabular everywhere. Counts are data and must line up.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono-For-Paths Rule",
+        "body": "Monospace marks something the person could paste into a terminal: a path, a branch, code. Never use it for decoration or tone.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Band Rule",
+        "body": "Layer bands divide the sheet by tone alone: alternating `band-a` / `band-b` with a `rule-2` seam. No boxed group borders, no band shadows.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Lift Means Moving Rule",
+        "body": "`shadow-lift` is only for things in motion or floating above the board. A box at rest never takes it.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do take every visual device from established architecture notation: layered bands, C4 boxes and type lines, UML dashed arrows, stereotypes in guillemets and dog-eared notes, the DSM.",
+      "Do colour elements by C4 kind only: package `container` with `container-ink`, folder `component`, file `code` with a `code-line` border.",
+      "Do reserve `bad` for rule breaks, `cycle` for cycles and `plan` for planned changes, and show each in the key wherever it appears on the board.",
+      "Do mark a planned change with a 1.5px dashed `plan` outline offset 2px and its stereotype (`«moved»`, `«new»`, `«renamed»`).",
+      "Do give every diagram view a title and a key.",
+      "Do keep layer labels and edge labels at their on-screen size at any zoom.",
+      "Do use tabular figures for every count and size, and mono only for paths, branches and code.",
+      "Do define every colour as a `:root` token and remap it in the dark scheme; components reference tokens, never literals.",
+      "Do keep corners at 4px for boxes and controls (3px chips, 2px swatches, 6px dialogs)."
+    ],
+    "donts": [
+      "Don't turn the board into a generic whiteboard canvas of rounded pastel cards and floating toolbars.",
+      "Don't make it a dark neon \"hacker\" tool or a wall of tiny labels; the light sheet is the default and both schemes come from the same tokens.",
+      "Don't use borrowed metaphors (maps, transit lines, star charts) for structure the notation already names.",
+      "Don't separate layers with boxed borders or shadows; bands divide by tone and a hairline.",
+      "Don't use `shadow-lift` on anything at rest.",
+      "Don't add a hue the key cannot explain, or use red, amber or green decoratively.",
+      "Don't fetch fonts, scripts or images; the board is one self-contained file using system font stacks."
+    ]
+  }
+}

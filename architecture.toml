@@ -1,9 +1,9 @@
 # archboard's own architecture, checked in CI by `archboard check`.
 
 [[layer]]
-name = "cli"
-description = "Commands and the board's HTTP API"
-paths = ["src/main"]
+name = "entry points"
+description = "Commands and the board's HTTP API, and the wasm bindings the static demo calls"
+paths = ["src/main", "src/wasm"]
 
 [[layer]]
 name = "apply"

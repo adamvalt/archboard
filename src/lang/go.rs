@@ -13,6 +13,7 @@ static BLOCK: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?ms)^import[ \t]*
 static QUOTED: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#""([^"]+)""#).expect("valid regex"));
 
 /// `go.mod`'s module path.
+#[must_use]
 pub fn read_manifest(dir: &Path) -> Option<String> {
     let text = std::fs::read_to_string(dir.join("go.mod")).ok()?;
     text.lines().find_map(|l| l.trim().strip_prefix("module ")).map(|m| m.trim().trim_matches('"').to_string())
@@ -31,6 +32,7 @@ pub fn imports(text: &str) -> Vec<(String, usize)> {
 }
 
 /// The node an import path names.
+#[must_use]
 pub fn resolve(path: &str, index: &Index) -> Option<String> {
     let (pkg, rest) = index.packages.iter().find_map(|p| {
         let module = p.go_module.as_deref()?;

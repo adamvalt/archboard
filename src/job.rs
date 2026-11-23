@@ -24,10 +24,10 @@ use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
 use tokio::sync::Notify;
 
-use crate::config::{self, Config};
-use crate::lang::Lang;
-use crate::model;
-use crate::plan::{self, Plan, Resolved};
+use archboard::config::{self, Config};
+use archboard::lang::Lang;
+use archboard::model;
+use archboard::plan::{self, Plan, Resolved};
 
 /// Where a job is.
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]

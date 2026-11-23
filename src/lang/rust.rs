@@ -1,4 +1,6 @@
-//! Rust: modules live under each crate's `src/`, and every `use` and path is
+//! Rust modules and paths.
+//!
+//! Modules live under each crate's `src/`, and every `use` and path is
 //! resolved with `syn` through `crate::`, `self::`, `super::`, workspace crate
 //! names and child modules, following `pub use` re-exports (globs too) so a
 //! path lands on the module that defines the item.
@@ -11,6 +13,10 @@ use syn::visit::Visit;
 
 /// The crate's package name and the name Rust code calls it by, if `dir` has
 /// a `Cargo.toml` with a `[package]`.
+///
+/// # Errors
+///
+/// When the `Cargo.toml` is not valid TOML.
 pub fn read_manifest(dir: &Path) -> Result<Option<(String, String)>> {
     let Ok(text) = std::fs::read_to_string(dir.join("Cargo.toml")) else { return Ok(None) };
     let manifest: toml::Value = toml::from_str(&text).with_context(|| format!("parsing {}/Cargo.toml", dir.display()))?;
@@ -46,6 +52,7 @@ pub struct Scan<'a> {
 impl<'a> Scan<'a> {
     /// `index` maps (crate id, module segments) to node ids; `lib_names` maps
     /// the names code uses for workspace crates to their ids.
+    #[must_use]
     pub fn new(index: &'a HashMap<AbsPath, String>, lib_names: HashMap<String, String>) -> Self {
         Self { index, lib_names, reexports: HashMap::new(), pending: Vec::new() }
     }
@@ -71,6 +78,7 @@ impl<'a> Scan<'a> {
     }
 
     /// Every (from node, to node, `file:line`) reference.
+    #[must_use]
     pub fn finish(self) -> Vec<(String, String, String)> {
         let resolver = Resolver { index: self.index, reexports: &self.reexports };
         self.pending.into_iter().filter_map(|(owner, path, at)| resolver.resolve(&path, 0).map(|t| (owner, t, at))).collect()

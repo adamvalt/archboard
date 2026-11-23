@@ -1,0 +1,29 @@
+# Example rules for the archboard demo, written for this snapshot of Flask;
+# not Flask's own.
+
+[scan]
+exclude = ["docs/**"]
+
+[[layer]]
+name = "entry points"
+description = "Commands and test tooling that drive an app from outside"
+paths = ["src/flask/cli", "src/flask/testing", "src/flask/__main__", "tests", "examples/**"]
+
+[[layer]]
+name = "application"
+description = "The Flask app and blueprints people build on"
+paths = ["src/flask/app", "src/flask/blueprints", "src/flask/views", "src/flask/sansio"]
+
+[[layer]]
+name = "request handling"
+description = "What a request passes through: contexts, sessions, templates, JSON, signals"
+paths = ["src/flask/ctx", "src/flask/sessions", "src/flask/templating", "src/flask/json", "src/flask/signals", "src/flask/wrappers", "src/flask/debughelpers", "src/flask/logging"]
+
+[[layer]]
+name = "foundation"
+description = "Globals, helpers, configuration and types with no dependency on the layers above"
+paths = ["src/flask/globals", "src/flask/helpers", "src/flask/config", "src/flask/typing", "src/flask"]
+
+[rules]
+acyclic = ["src/flask/*"]
+module_doc = ["src/flask/*"]

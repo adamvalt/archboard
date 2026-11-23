@@ -102,11 +102,13 @@ impl Model {
     }
 
     /// Whether `inner` is `outer` or lies inside it.
+    #[must_use]
     pub fn is_within(&self, inner: &str, outer: &str) -> bool {
         self.ancestors(inner).any(|a| a == outer)
     }
 
     /// Every package's id and languages.
+    #[must_use]
     pub fn packages(&self) -> Vec<(String, Vec<Lang>)> {
         self.nodes.values().filter(|n| n.kind == NodeKind::Package).map(|n| (n.id.clone(), n.langs.clone())).collect()
     }
@@ -130,6 +132,10 @@ struct SourceFile {
 }
 
 /// Scans the packages `config` names (or finds them) under `repo`.
+///
+/// # Errors
+///
+/// When a package's manifest cannot be parsed.
 #[expect(clippy::too_many_lines, reason = "the file walk, the import pass and the totals share their indexes")]
 pub fn scan(repo: &Path, config: &Config) -> Result<Model> {
     let packages = lang::discover(repo, config)?;
@@ -355,6 +361,7 @@ fn python_roots(packages: &[Package], ids: &HashSet<String>) -> Vec<String> {
 }
 
 /// `[verify] commands`, or the usual checks for the codebase's languages when unset.
+#[must_use]
 pub fn verify_commands(config: &Config, repo: &Path, model: &Model) -> Vec<String> {
     config.verify.commands.clone().unwrap_or_else(|| lang::default_verify(repo, &model.packages()))
 }
@@ -382,6 +389,7 @@ pub fn assign_layers(model: &mut Model, config: &Config) {
 
 /// The path a child named `name` of package or folder `parent` (at
 /// `parent_path`) has.
+#[must_use]
 pub fn child_path(parent_path: &str, parent_src_root: Option<&str>, name: &str) -> String {
     parent_src_root.map_or_else(|| join(parent_path, &[name]), |src| join(parent_path, &[src, name]))
 }

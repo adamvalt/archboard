@@ -1,6 +1,8 @@
-//! `architecture.toml`: which packages make up the codebase, the architecture
-//! rules they must keep, and how Claude Code is run and its work verified.
-//! Every section is optional: without the file, archboard finds the packages
+//! `architecture.toml`, archboard's configuration.
+//!
+//! It says which packages make up the codebase, the architecture rules they
+//! must keep, and how Claude Code is run and its work verified. Every section
+//! is optional: without the file, archboard finds the packages
 //! itself, checks no rules, and verifies with the languages' usual checks.
 
 use std::path::Path;
@@ -124,6 +126,10 @@ pub struct Verify {
 
 impl Config {
     /// Reads `architecture.toml` from `repo`, or the defaults when it has none.
+    ///
+    /// # Errors
+    ///
+    /// When the file exists but cannot be read or parsed.
     pub fn load(repo: &Path) -> Result<Self> {
         let path = repo.join(CONFIG_FILE);
         if !path.exists() {

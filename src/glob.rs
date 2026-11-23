@@ -2,6 +2,7 @@
 //! `**` matches any number of whole segments (including none).
 
 /// Whether `path` matches `pattern`.
+#[must_use]
 pub fn matches(pattern: &str, path: &str) -> bool {
     let pat: Vec<&str> = pattern.split('/').filter(|s| !s.is_empty()).collect();
     let segs: Vec<&str> = path.split('/').filter(|s| !s.is_empty()).collect();
@@ -28,6 +29,7 @@ fn match_segment(p: &[u8], s: &[u8]) -> bool {
 
 /// How specific a pattern is: its literal characters, so `src/plugins/ui/**`
 /// beats `src/plugins/**` when both match.
+#[must_use]
 pub fn specificity(pattern: &str) -> usize {
     pattern.chars().filter(|&c| c != '*').count()
 }

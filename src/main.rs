@@ -7,13 +7,7 @@
 //! verifies the result (see [`job`]). `archboard check` runs the same rules
 //! from the command line, for CI.
 
-mod config;
-mod glob;
 mod job;
-mod lang;
-mod model;
-mod plan;
-mod rules;
 
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
@@ -27,7 +21,8 @@ use axum::{Json, Router};
 use clap::{Parser, Subcommand};
 use serde::{Deserialize, Serialize};
 
-use crate::config::Config;
+use archboard::config::{self, Config};
+use archboard::{model, plan, rules};
 
 #[derive(Parser)]
 #[command(version, about)]
@@ -60,6 +55,19 @@ enum Command {
     Graph,
     /// Write a starter `architecture.toml` for the repository.
     Init,
+    /// Write a snapshot of the board (model, rules, violations) as JSON, for
+    /// the static demo page.
+    Export {
+        /// Where to write it.
+        #[arg(long)]
+        out: PathBuf,
+        /// Rules to use instead of the repository's `architecture.toml`.
+        #[arg(long)]
+        config: Option<PathBuf>,
+        /// The name shown for the repository; its directory name by default.
+        #[arg(long)]
+        name: Option<String>,
+    },
 }
 
 #[tokio::main]
@@ -70,6 +78,7 @@ async fn main() -> Result<()> {
         Command::Serve { port } => serve(repo, port).await,
         Command::Check { json, write_baseline } => check(&repo, json, write_baseline),
         Command::Init => init(&repo),
+        Command::Export { out, config, name } => export(&repo, &out, config.as_deref(), name),
         Command::Graph => {
             let config = Config::load(&repo)?;
             println!("{}", serde_json::to_string_pretty(&model::scan(&repo, &config)?)?);
@@ -160,6 +169,34 @@ commands = [{verify}]
     );
     std::fs::write(&path, text)?;
     println!("wrote {} ({} package(s)); `archboard check --write-baseline` records today's violations", config::CONFIG_FILE, ids.len());
+    Ok(())
+}
+
+/// Writes what `/api/model` serves, plus the rules it was checked with.
+fn export(repo: &Path, out: &Path, config_path: Option<&Path>, name: Option<String>) -> Result<()> {
+    let config = match config_path {
+        Some(p) => toml::from_str(&std::fs::read_to_string(p).with_context(|| format!("reading {}", p.display()))?)?,
+        None => Config::load(repo)?,
+    };
+    let mut model = model::scan(repo, &config)?;
+    if let Some(name) = name
+        && let Some(ws) = model.nodes.get_mut(model::WORKSPACE)
+    {
+        ws.name = name;
+    }
+    let violations = rules::check(&model, &config);
+    let baseline = if config_path.is_some() { Vec::new() } else { config::load_baseline(repo) };
+    let commit = std::process::Command::new("git").args(["rev-parse", "--short", "HEAD"]).current_dir(repo).output().ok().filter(|o| o.status.success()).map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string());
+    let snapshot = serde_json::json!({
+        "branch": commit.map_or_else(|| "snapshot".to_string(), |c| format!("snapshot at {c}")),
+        "known": violations.iter().filter(|v| rules::is_known(v, &baseline)).map(|v| v.key.clone()).collect::<Vec<_>>(),
+        "violations": violations,
+        "layers": config.layers,
+        "model": model,
+        "config": config,
+    });
+    std::fs::write(out, serde_json::to_string(&snapshot)?)?;
+    println!("wrote {} ({} nodes, {} edges, {} violations)", out.display(), model.nodes.len(), model.edges.len(), snapshot["violations"].as_array().map_or(0, Vec::len));
     Ok(())
 }
 

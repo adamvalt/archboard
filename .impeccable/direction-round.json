@@ -1,0 +1,230 @@
+{
+  "title": "Choose the board's visual world",
+  "question": "The roll assigned the Drafting Sheet. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Drafting Sheet",
+      "kicker": "THE ROLL",
+      "lineage": "architects' construction drawings and their revision markup",
+      "thesis": "The repository drawn as a construction sheet; your plan is the redline on it.",
+      "palette": [
+        "#eceeed",
+        "#24272b",
+        "#d2392e",
+        "#8fb8d8",
+        "#c9cfcc"
+      ],
+      "materials": [
+        "drafting film",
+        "technical-pen linework",
+        "red-pencil revision clouds",
+        "title block"
+      ],
+      "viewport": "A full-bleed sheet: fine non-photo-blue grid with lettered and numbered border references, layers drawn as levels with level markers at the left, packages as plan outlines, the title block bottom-right holding repo, branch and rule status, and every planned move marked in red pencil with a numbered delta.",
+      "risk": "Becomes blueprint costume (white lines on blue) if the drawing conventions are decoration rather than how the board works.",
+      "raised": [
+        {
+          "from": "challenger-split-flap",
+          "raise": "The Run log and the violation list are a fixed-column ledger whose rows restyle by state without breaking the grid."
+        },
+        {
+          "from": "challenger-botanical",
+          "raise": "Current and planned layouts share one scale and registration, so a toggle compares before and after in place."
+        },
+        {
+          "from": "challenger-zoo-map",
+          "raise": "Layer bands are flat fields that do the dividing on their own; no boxed group borders."
+        },
+        {
+          "from": "challenger-star-atlas",
+          "raise": "Card weight follows one fixed ramp of lines of code, so the biggest modules read first."
+        },
+        {
+          "from": "challenger-crouwel",
+          "raise": "Cards snap to the sheet's grid modules, and snapping is a visible state."
+        }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Transit Schematic",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Beck and Vignelli subway diagrams",
+      "thesis": "Layers as lines and packages as stations; dependencies are the routes between them.",
+      "palette": [
+        "#ffffff",
+        "#1b1b1b",
+        "#e32017",
+        "#0098d4",
+        "#ffd300",
+        "#00782a"
+      ],
+      "materials": [
+        "45-degree routing",
+        "station ticks and interchange rings",
+        "line-colour legend"
+      ],
+      "viewport": "A white schematic with each layer as a coloured line, packages as stations along it, and interchange rings where layers depend on each other.",
+      "risk": "The most familiar metaphor for dependency tools, and schematic routing strains past a few hundred edges."
+    },
+    {
+      "id": "challenger-split-flap",
+      "label": "Split-flap Concourse",
+      "verdict": "declined",
+      "lineage": "railway departure boards",
+      "thesis": "Every module a row on a live departures board.",
+      "palette": [
+        "#111111",
+        "#f4f4f0",
+        "#f2a900",
+        "#a3241c"
+      ],
+      "materials": [
+        "matte flaps",
+        "brushed steel",
+        "row lamps"
+      ],
+      "viewport": "Ruled rows of modules ranked by size, status lamps for violations.",
+      "case": "Fuses poorly: a board of rows cannot show the shape of a dependency graph, the first thing people need.",
+      "risk": "A dark, tabular board fights the canvas the product depends on.",
+      "kept": "Fixed-column ledger rhythm for the Run log and violations."
+    },
+    {
+      "id": "challenger-star-atlas",
+      "label": "Star Atlas",
+      "verdict": "declined",
+      "lineage": "celestial charts",
+      "thesis": "Modules as stars sized by magnitude on one chart.",
+      "palette": [
+        "#14213d",
+        "#f1f1ea",
+        "#e0a33a",
+        "#c0392b"
+      ],
+      "materials": [
+        "navy chart ground",
+        "magnitude dots",
+        "faint constellation lines"
+      ],
+      "viewport": "A dark chart with modules as dots sized by lines of code.",
+      "case": "Fuses partly: size-as-magnitude is clear, but a night chart drifts toward the dark look you ruled out and developers don't read the metaphor.",
+      "risk": "Reads as the dark 'hacker' board with better manners.",
+      "kept": "A fixed size ramp carries hierarchy."
+    },
+    {
+      "id": "challenger-crouwel",
+      "label": "Crouwel Grid",
+      "verdict": "declined",
+      "lineage": "Wim Crouwel's gridded specimens",
+      "thesis": "A visible construction grid every card is built on.",
+      "palette": [
+        "#ffffff",
+        "#111111",
+        "#8ab4f8",
+        "#ff4f00"
+      ],
+      "materials": [
+        "graph-paper hairlines",
+        "cell-built letterforms"
+      ],
+      "viewport": "A white sheet with a visible grid and monumental type.",
+      "case": "Fuses partly: the grid suits the board, but its monumental type costs canvas and says nothing about dependencies.",
+      "risk": "Poster type eats the space the graph needs.",
+      "kept": "Snap to whole grid modules as a visible state."
+    },
+    {
+      "id": "challenger-zoo-map",
+      "label": "Guide-map Lobes",
+      "verdict": "declined",
+      "lineage": "zoo and garden guide maps",
+      "thesis": "Layers as flat colour territories with coastlines.",
+      "palette": [
+        "#8ed462",
+        "#f5f1e4",
+        "#2c2e2a",
+        "#ff705d",
+        "#2ba0ff"
+      ],
+      "materials": [
+        "flat colour lobes",
+        "capsule labels"
+      ],
+      "viewport": "Layers as swelling coloured lobes; modules as labelled points on them.",
+      "case": "Fuses poorly: playful territories undercut a tool that gates real code changes.",
+      "risk": "Whimsy where precision is the promise.",
+      "kept": "Flat fields divide on their own, no boxes."
+    },
+    {
+      "id": "challenger-botanical",
+      "label": "Botanical Folio",
+      "verdict": "declined",
+      "lineage": "seasonal botanical plates",
+      "thesis": "Before and after as plates at one fixed scale.",
+      "palette": [
+        "#f3eddc",
+        "#5b4636",
+        "#3f7d3a",
+        "#b2302b"
+      ],
+      "materials": [
+        "engraved plates",
+        "sepia hairlines"
+      ],
+      "viewport": "Current and planned layouts as matched plates side by side.",
+      "case": "Fuses poorly: an engraved, cream world says nothing to developers about code.",
+      "risk": "Pretty and off-subject.",
+      "kept": "Registration: compare states at one scale."
+    },
+    {
+      "id": "challenger-bitmap",
+      "label": "Bitmap Specimen",
+      "verdict": "declined",
+      "lineage": "Emigre bitmap type specimens",
+      "thesis": "Pixel letterforms at poster scale.",
+      "palette": [
+        "#ffffff",
+        "#111111",
+        "#00a36c"
+      ],
+      "materials": [
+        "bitmap type",
+        "halftone"
+      ],
+      "viewport": "Package names in coarse pixel type over dense columns.",
+      "case": "Fuses poorly: retro type styling, no help reading a graph.",
+      "risk": "Novelty that wears off by the second session.",
+      "kept": "Labels step between a few fixed sizes per zoom level."
+    }
+  ],
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "buildPath": {
+    "value": "code"
+  },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A whiteboard-style graph canvas, executed impeccably.",
+    "palette": [
+      "#f7f7f8",
+      "#18181b",
+      "#4f46e5",
+      "#e4e4e7"
+    ],
+    "materials": [
+      "rounded node cards",
+      "soft group fills",
+      "floating toolbars"
+    ],
+    "viewport": "A light canvas of rounded cards in tinted group regions with a floating toolbar and inspector.",
+    "risk": "Indistinguishable from every diagram and graph tool by design."
+  },
+  "steer": true,
+  "seed": "ac07b812",
+  "outcome": "user steered to established software-architecture notation (canon); combined layered + C4 + UML + DSM"
+}

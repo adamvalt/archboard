@@ -1,7 +1,9 @@
-//! TypeScript and JavaScript: `import`/`export … from`, `require()` and
-//! dynamic `import()` specifiers, resolved relative to the file, through
-//! `tsconfig.json` `paths` and `baseUrl`, or to a workspace package by its
-//! `package.json` name. Anything else is a dependency from outside.
+//! TypeScript and JavaScript imports.
+//!
+//! `import`/`export … from`, `require()` and dynamic `import()` specifiers are
+//! resolved relative to the file, through `tsconfig.json` `paths` and
+//! `baseUrl`, or to a workspace package by its `package.json` name. Anything
+//! else is a dependency from outside.
 
 use std::path::Path;
 use std::sync::LazyLock;
@@ -26,6 +28,7 @@ pub fn read_manifest(dir: &Path) -> Option<Manifest> {
 }
 
 /// The module specifiers in `text`, with their lines.
+#[must_use]
 pub fn imports(text: &str) -> Vec<(String, usize)> {
     let lines = Lines::new(text);
     let mut out: Vec<(usize, String)> = [&*FROM, &*BARE, &*CALL]
@@ -38,6 +41,7 @@ pub fn imports(text: &str) -> Vec<(String, usize)> {
 }
 
 /// The node `spec`, imported from the file at `file`, names.
+#[must_use]
 pub fn resolve(spec: &str, file: &str, pkg: &Package, index: &Index) -> Option<String> {
     let segs = if spec.starts_with('.') {
         let mut dir = segments(file);
@@ -105,6 +109,7 @@ impl TsConfig {
     }
 
     /// The repository path an aliased specifier stands for (its first target).
+    #[must_use]
     pub fn alias(&self, spec: &str) -> Option<Vec<String>> {
         self.paths
             .iter()

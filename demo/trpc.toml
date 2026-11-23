@@ -1,0 +1,28 @@
+# Example rules for the archboard demo, written for this snapshot of tRPC;
+# not tRPC's own.
+
+[scan]
+exclude = ["www/**", "examples/**"]
+
+[[layer]]
+name = "tooling"
+description = "Tests, codemods and repository tooling"
+paths = ["packages/tests", "packages/upgrade", "tooling/**", "."]
+
+[[layer]]
+name = "integrations"
+description = "Framework adapters: React Query, Next.js, TanStack, OpenAPI"
+paths = ["packages/react-query", "packages/next", "packages/tanstack-react-query", "packages/openapi"]
+
+[[layer]]
+name = "client"
+description = "The typed client and its links"
+paths = ["packages/client"]
+
+[[layer]]
+name = "server"
+description = "Routers, procedures, adapters and the core every package builds on"
+paths = ["packages/server"]
+
+[rules]
+acyclic = ["packages/*"]

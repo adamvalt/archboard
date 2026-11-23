@@ -1,4 +1,6 @@
-//! Python: `import a.b` and `from a.b import c` (relative ones too), resolved
+//! Python imports.
+//!
+//! `import a.b` and `from a.b import c` (relative ones too) are resolved
 //! against the folders absolute imports start from: each Python package's
 //! directory, its `src/`, and the repository root. A module no node matches is
 //! from outside (the standard library, an installed package).

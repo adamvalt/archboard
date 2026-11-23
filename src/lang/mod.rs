@@ -41,6 +41,7 @@ impl Lang {
 
     /// The language of a source file, by extension; TypeScript declaration
     /// files are not source.
+    #[must_use]
     pub fn of_file(path: &str) -> Option<Self> {
         if path.ends_with(".d.ts") || path.ends_with(".d.mts") || path.ends_with(".d.cts") {
             return None;
@@ -55,6 +56,7 @@ impl Lang {
     }
 
     /// File stems that stand for the folder they are in.
+    #[must_use]
     pub const fn dir_root_stems(self) -> &'static [&'static str] {
         match self {
             Self::Rust => &["mod"],
@@ -65,6 +67,7 @@ impl Lang {
     }
 
     /// File stems at the top of a package's sources that stand for the package.
+    #[must_use]
     pub const fn package_root_stems(self) -> &'static [&'static str] {
         match self {
             Self::Rust => &["lib", "main"],
@@ -75,6 +78,7 @@ impl Lang {
     /// Whether a file opens with a doc saying what it is for: `//!` in Rust,
     /// a docstring in Python, a leading comment block in TypeScript and
     /// JavaScript, a `// Package` comment in Go.
+    #[must_use]
     pub fn has_doc(self, text: &str) -> bool {
         match self {
             Self::Rust => rust::has_doc(text),
@@ -85,6 +89,7 @@ impl Lang {
     }
 
     /// Shown on the board and in the prompt.
+    #[must_use]
     pub const fn label(self) -> &'static str {
         match self {
             Self::Rust => "Rust",
@@ -95,6 +100,7 @@ impl Lang {
     }
 
     /// What Claude Code must update when this language's files move.
+    #[must_use]
     pub const fn how(self) -> &'static str {
         match self {
             Self::Rust => {
@@ -120,6 +126,7 @@ impl Lang {
     }
 
     /// Commands Claude Code may run for this language, beyond reading and editing.
+    #[must_use]
     pub const fn tools(self) -> &'static [&'static str] {
         match self {
             Self::Rust => &["Bash(cargo check:*)", "Bash(cargo test:*)", "Bash(cargo nextest:*)", "Bash(cargo build:*)"],
@@ -170,6 +177,7 @@ pub const SKIP_DIRS: &[&str] = &[
 ];
 
 /// Whether `rel` (or a folder it is in) is excluded by `[scan] exclude`.
+#[must_use]
 pub fn excluded(config: &Config, rel: &str) -> bool {
     config.scan.exclude.iter().any(|g| glob::matches(g, rel) || ancestors_of(rel).any(|a| glob::matches(g, a)))
 }
@@ -187,6 +195,7 @@ pub fn walker(dir: &Path) -> ignore::WalkBuilder {
 }
 
 /// Repository-relative, `/`-separated, `.` for the root.
+#[must_use]
 pub fn rel(repo: &Path, path: &Path) -> String {
     let s = path.strip_prefix(repo).unwrap_or(path).to_string_lossy().replace('\\', "/");
     let s = s.trim_start_matches("./").trim_end_matches('/');
@@ -209,6 +218,7 @@ pub fn segments(rel: &str) -> Vec<String> {
 }
 
 /// `spec` (`./a`, `../b/c`) applied to the folder `base`; `None` if it leaves the repository.
+#[must_use]
 pub fn normalize(mut base: Vec<String>, spec: &str) -> Option<Vec<String>> {
     for part in spec.split('/') {
         match part {
@@ -236,11 +246,13 @@ pub struct Index<'a> {
 impl Index<'_> {
     /// The deepest node along the repository path `segs`, or `None` when not
     /// even its first segment is one.
+    #[must_use]
     pub fn deepest(&self, segs: &[String]) -> Option<String> {
         (1..=segs.len()).rev().map(|n| segs[..n].join("/")).find(|id| self.ids.contains(id))
     }
 
     /// Whether a node has this id.
+    #[must_use]
     pub fn has(&self, id: &str) -> bool {
         self.ids.contains(id)
     }
@@ -248,6 +260,7 @@ impl Index<'_> {
 
 /// Drops a source file's extension and a folder-root stem (`index`,
 /// `__init__`) from the end of an import's path.
+#[must_use]
 pub fn strip_module_suffix(mut segs: Vec<String>, lang: Lang) -> Vec<String> {
     if let Some(last) = segs.last_mut()
         && Lang::of_file(last).is_some()
@@ -267,19 +280,26 @@ pub struct Lines(Vec<usize>);
 
 impl Lines {
     /// Indexes `text`'s line starts.
+    #[must_use]
     pub fn new(text: &str) -> Self {
         Self(std::iter::once(0).chain(text.match_indices('\n').map(|(i, _)| i + 1)).collect())
     }
 
     /// The 1-based line holding byte `offset`.
+    #[must_use]
     pub fn at(&self, offset: usize) -> usize {
         self.0.partition_point(|&start| start <= offset)
     }
 }
 
-/// The packages `config` names, or every one found under `repo` when it names
-/// none. Without a config, a repository with no package at its root gets one
+/// The packages `config` names, or every one found under `repo`.
+///
+/// Without a package list, a repository with no package at its root gets one
 /// for the code outside the others (dropped later if it holds none).
+///
+/// # Errors
+///
+/// When a manifest cannot be parsed.
 pub fn discover(repo: &Path, config: &Config) -> Result<Vec<Package>> {
     let mut dirs: Vec<String> = Vec::new();
     match &config.scan.packages {
@@ -386,6 +406,7 @@ fn read_package(repo: &Path, dir: &str) -> Result<Option<Package>> {
 
 /// Commands that check a repository still builds, for the languages its
 /// packages are in: what `[verify]` runs when it lists none.
+#[must_use]
 pub fn default_verify(repo: &Path, packages: &[(String, Vec<Lang>)]) -> Vec<String> {
     let mut commands = Vec::new();
     let has = |l: Lang| packages.iter().any(|(_, langs)| langs.contains(&l));

@@ -30,6 +30,7 @@ pub struct Violation {
 impl Violation {
     /// Rebuilds the key from `rule` and `nodes`, e.g. after the nodes were
     /// renamed by a plan.
+    #[must_use]
     pub fn make_key(rule: &str, nodes: &[String]) -> String {
         match rule {
             "cycle" => {
@@ -45,6 +46,7 @@ impl Violation {
 
 /// Whether `baseline` lists `v`. A known cycle also covers every smaller
 /// cycle among its members, so breaking part of a cycle never fails the check.
+#[must_use]
 pub fn is_known(v: &Violation, baseline: &[String]) -> bool {
     baseline.iter().any(|k| {
         k == &v.key
@@ -57,11 +59,13 @@ pub fn is_known(v: &Violation, baseline: &[String]) -> bool {
 }
 
 /// Baseline keys no current violation needs any more.
+#[must_use]
 pub fn stale<'a>(violations: &[Violation], baseline: &'a [String]) -> Vec<&'a String> {
     baseline.iter().filter(|k| !violations.iter().any(|v| is_known(v, std::slice::from_ref(*k)))).collect()
 }
 
 /// Every violation in `model`, in key order.
+#[must_use]
 pub fn check(model: &Model, config: &Config) -> Vec<Violation> {
     let mut out = Vec::new();
     let rank: HashMap<&str, usize> = config.layers.iter().enumerate().map(|(i, l)| (l.name.as_str(), i)).collect();

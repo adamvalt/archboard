@@ -3,6 +3,7 @@ name = "archboard"
 version = "0.1.0"
 edition = "2024"
 description = "Architecture board for any repository: drag its packages, folders and modules into a new layout, check it against architecture rules, and have Claude Code carry it out"
+license = "MIT"
 repository = "https://github.com/adamvalt/archboard"
 readme = "README.md"
 keywords = ["architecture", "refactoring", "claude", "dependency-graph"]
@@ -12,18 +13,28 @@ publish = false
 # Stays its own workspace when checked out inside another Cargo workspace.
 [workspace]
 
+[lib]
+crate-type = ["rlib", "cdylib"]
+
 [dependencies]
 anyhow = "1"
-axum = { version = "0.8", default-features = false, features = ["http1", "json", "query", "tokio"] }
-clap = { version = "4", features = ["derive"] }
 ignore = "0.4"
 proc-macro2 = { version = "1", features = ["span-locations"] }
 regex = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 syn = { version = "2", features = ["full", "visit"] }
-tokio = { version = "1", features = ["macros", "rt-multi-thread", "process", "io-util", "sync", "net", "time"] }
 toml = "0.8"
+
+# The server and CLI; the wasm build is the library alone, for the static demo.
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "query", "tokio"] }
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "process", "io-util", "sync", "net", "time"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# Pinned to the wasm-bindgen CLI the Pages workflow installs; the two must match.
+wasm-bindgen = "=0.2.130"
 
 [dev-dependencies]
 tempfile = "3"

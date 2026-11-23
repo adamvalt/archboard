@@ -6,6 +6,10 @@ against your architecture rules while you draw, then has
 [Claude Code](https://claude.com/claude-code) carry it out and verifies the
 result.
 
+**[Try the demo](https://adamvalt.github.io/archboard/)**: the board over
+snapshots of tRPC, Flask and archboard itself, with plan checking running in
+your browser (Apply needs a local install).
+
 It reads **Rust**, **TypeScript/JavaScript**, **Python** and **Go**, including
 repositories that mix them. It needs no setup: point it at a repository and
 it finds the packages itself.
@@ -148,6 +152,14 @@ cycle up never fails the check, but a module joining one does.
 - run: cargo install --locked --git https://github.com/adamvalt/archboard
 - run: archboard check
 ```
+
+## The demo
+
+`demo/build-site.sh` builds the GitHub Pages demo into `site/`: the board page
+in demo mode, the library compiled to wasm (`src/wasm.rs`) for plan checking
+and prompts, and an `archboard export` snapshot of each repository in
+`demo/repos.json`, with the example rules in `demo/*.toml`. The Pages workflow
+runs it on every push to `main`.
 
 ## Developing
 
